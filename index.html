@@ -115,7 +115,7 @@
     background-image:radial-gradient(rgba(201,162,75,.05) 1px,transparent 1px);
     background-size:34px 34px;opacity:.5;mask-image:radial-gradient(ellipse 60% 60% at 50% 40%,black,transparent 75%)}
   .hero-inner{position:relative;z-index:1;max-width:760px}
-  .seal{width:148px;height:148px;margin:0 auto 30px}
+  .seal{width:180px;height:auto;display:block;margin:0 auto 30px;filter:drop-shadow(0 0 24px rgba(201,162,75,.18))}
   .hero h1{font-family:var(--display);font-weight:600;
     font-size:clamp(2.8rem,7vw,5rem);line-height:1.02;letter-spacing:.005em;
     background:linear-gradient(100deg,#9A7B2E 0%,#E6C66E 28%,#FFF1C4 47%,#E6C66E 66%,#9A7B2E 100%);
@@ -389,25 +389,7 @@
 <section class="hero" id="top">
   <div class="hero-bg"></div>
   <div class="hero-inner">
-    <svg class="seal" viewBox="0 0 200 200" aria-label="Sceau du Gouvernement de San Andreas">
-      <defs>
-        <path id="ring" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/>
-        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#E3C36A"/><stop offset="1" stop-color="#B8893A"/>
-        </linearGradient>
-      </defs>
-      <circle cx="100" cy="100" r="92" fill="none" stroke="url(#g)" stroke-width="2.5"/>
-      <circle cx="100" cy="100" r="84" fill="none" stroke="#C9A24B" stroke-width="1" opacity=".45"/>
-      <circle cx="100" cy="100" r="58" fill="none" stroke="#C9A24B" stroke-width="1.2" opacity=".7"/>
-      <text font-family="Inter,sans-serif" font-size="10.5" letter-spacing="3.5" fill="#C9A24B" font-weight="500">
-        <textPath href="#ring" startOffset="0%">GOUVERNEMENT&#160;&#160;&#8226;&#160;&#160;RÉPUBLIQUE DE SAN ANDREAS&#160;&#160;&#8226;&#160;&#160;</textPath>
-      </text>
-      <!-- star -->
-      <path d="M100 58 L108 86 L137 86 L113 103 L122 131 L100 114 L78 131 L87 103 L63 86 L92 86 Z" fill="url(#g)"/>
-      <!-- laurel hints -->
-      <path d="M72 132 Q60 118 64 102" fill="none" stroke="#C9A24B" stroke-width="1.6" opacity=".8"/>
-      <path d="M128 132 Q140 118 136 102" fill="none" stroke="#C9A24B" stroke-width="1.6" opacity=".8"/>
-    </svg>
+    <img class="seal" src="logo.png" alt="Sceau du Gouvernement de San Andreas">
     <h1>San&nbsp;Andreas<br><em>Government</em></h1>
     <p class="devise">Honneur · Travail · Solidarité</p>
     <p class="intro">L'institution officielle qui régit la vie civile, économique et judiciaire de l'État. Découvrez sa structure, ses ministères et rejoignez ses rangs.</p>
