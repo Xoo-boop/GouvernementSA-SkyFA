@@ -24,7 +24,7 @@
     --maxw:1140px;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
   body{
     background:var(--navy);
     color:var(--ivory);
@@ -73,6 +73,8 @@
   nav a.link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .3s ease}
   nav a.link:hover{color:var(--ivory)}
   nav a.link:hover::after{width:100%}
+  nav a.link.active{color:var(--ivory)}
+  nav a.link.active::after{width:100%}
   .btn{
     font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.04em;
     padding:11px 22px;border-radius:2px;cursor:pointer;display:inline-flex;
@@ -783,7 +785,7 @@
 
   /* ---- Accès à l'édition protégé par mot de passe ---- */
   // ⚙️ Changez ce mot de passe. L'éditeur s'ouvre via une URL finissant par #admin, ou avec Ctrl+Maj+E.
-  const EDIT_PASSWORD="Jamais!";
+  const EDIT_PASSWORD="changez-moi";
   function unlockEditor(){
     const pw=prompt("Mot de passe d'édition :");
     if(pw===null)return;
@@ -838,6 +840,20 @@
       rdvBtn.disabled=false;
     });
   }
+  /* ---- Onglet actif au défilement (scroll-spy) ---- */
+  const navLinks=[...document.querySelectorAll('nav a.link')];
+  const linkById={};
+  navLinks.forEach(a=>{const id=a.getAttribute('href').slice(1);if(id)linkById[id]=a;});
+  const spy=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        navLinks.forEach(a=>a.classList.remove('active'));
+        const a=linkById[e.target.id];
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-45% 0px -50% 0px',threshold:0});
+  Object.keys(linkById).forEach(id=>{const s=document.getElementById(id);if(s)spy.observe(s);});
 </script>
 </body>
 </html>
