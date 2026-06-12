@@ -217,7 +217,7 @@
     html{scroll-behavior:auto}
   }
   /* ---- Mode édition ---- */
-  #editBar{position:fixed;right:18px;bottom:18px;z-index:100;display:flex;gap:10px;align-items:center;
+  #editBar{position:fixed;right:18px;bottom:18px;z-index:100;display:none;gap:10px;align-items:center;
     background:rgba(18,18,20,.94);backdrop-filter:blur(10px);border:1px solid var(--panel-line);
     border-radius:7px;padding:9px 12px;box-shadow:0 10px 34px rgba(0,0,0,.55)}
   #editBar .hint{font-size:.72rem;color:var(--muted);max-width:170px;line-height:1.3}
@@ -780,6 +780,20 @@
   document.getElementById('orgAddBottom').addEventListener('click',()=>addTier('bottom'));
   const newsAddBtn=document.getElementById('newsAddBtn');
   if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
+
+  /* ---- Accès à l'édition protégé par mot de passe ---- */
+  // ⚙️ Changez ce mot de passe. L'éditeur s'ouvre via une URL finissant par #admin, ou avec Ctrl+Maj+E.
+  const EDIT_PASSWORD="changez-moi";
+  function unlockEditor(){
+    const pw=prompt("Mot de passe d'édition :");
+    if(pw===null)return;
+    if(pw===EDIT_PASSWORD){document.getElementById('editBar').style.display='flex';}
+    else alert("Mot de passe incorrect.");
+  }
+  if(location.hash.toLowerCase()==='#admin')unlockEditor();
+  document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.shiftKey&&(e.key==='E'||e.key==='e')){e.preventDefault();unlockEditor();}
+  });
 
   /* ---- Prise de rendez-vous → webhook Discord ---- */
   // ⚙️ Collez ici l'URL de votre webhook Discord (Paramètres du salon › Intégrations › Webhooks)
