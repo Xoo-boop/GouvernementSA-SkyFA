@@ -4,6 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>San Andreas Government</title>
+<meta name="description" content="Portail officiel du Gouvernement de San Andreas — serveur RP SkyFA. Départements, organigramme, actualités, agenda et rendez-vous.">
+<meta name="theme-color" content="#0A0A0B">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230A0A0B' stroke='%23C9A24B' stroke-width='4'/%3E%3Cpath d='M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z' fill='%23E3C36A'/%3E%3C/svg%3E">
+<!-- Aperçu lors du partage (Discord, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="San Andreas Government">
+<meta property="og:description" content="Portail officiel du Gouvernement de San Andreas — serveur RP SkyFA.">
+<meta property="og:image" content="/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="San Andreas Government">
+<meta name="twitter:image" content="/og.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -213,7 +224,7 @@
     .steps{grid-template-columns:repeat(2,1fr)}
     .step::after{display:none}
   }
-  @media(max-width:640px){
+  @media(max-width:1024px){
     nav ul{display:none}
     nav ul.open{display:flex;flex-direction:column;align-items:flex-start;gap:20px;
       position:absolute;top:74px;right:14px;left:14px;padding:22px 24px;z-index:60;
@@ -221,6 +232,8 @@
       border:1px solid var(--panel-line);border-radius:8px;box-shadow:0 16px 40px rgba(0,0,0,.6)}
     nav ul.open a.link::after{display:none}
     .menu-toggle{display:block}
+  }
+  @media(max-width:640px){
     .min-grid,.steps{grid-template-columns:1fr}
     #portail .portal-box{padding:34px 24px}
     .stats{gap:28px}
@@ -283,6 +296,35 @@
   .news-add button:hover{background:rgba(201,162,75,.14);border-style:solid}
   @media(max-width:640px){.news-grid{grid-template-columns:1fr}}
 
+  /* ---- Agenda ---- */
+  .agenda-list{margin-top:48px;display:flex;flex-direction:column;gap:18px}
+  .agenda-item{display:flex;gap:24px;align-items:flex-start;padding:24px 26px;border:1px solid var(--panel-line);border-radius:3px;
+    background:linear-gradient(180deg,var(--panel),var(--navy-2));position:relative;transition:border-color .3s ease}
+  .agenda-item:hover{border-color:rgba(201,162,75,.4)}
+  .agenda-date{flex:none;width:92px;text-align:center;border-right:1px solid var(--panel-line);padding-right:22px}
+  .agenda-date .d{font-family:var(--display);font-size:2.1rem;font-weight:600;color:var(--gold-bright);line-height:1}
+  .agenda-date .m{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:5px}
+  .agenda-body h3{font-family:var(--display);font-size:1.4rem;font-weight:600;color:var(--ivory);line-height:1.15}
+  .agenda-body p{font-size:.92rem;color:var(--ivory-dim);margin-top:6px}
+  .agenda-add,.dir-add{display:none;justify-content:center;margin-top:32px}
+  body.editing .agenda-add,body.editing .dir-add{display:flex}
+  .agenda-add button,.dir-add button{font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+    padding:11px 24px;border-radius:3px;cursor:pointer;border:1px dashed var(--gold);background:rgba(201,162,75,.06);color:var(--gold);transition:all .2s}
+  .agenda-add button:hover,.dir-add button:hover{background:rgba(201,162,75,.14);border-style:solid}
+
+  /* ---- Annuaire ---- */
+  .dir-grid{margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+  .dir-card{padding:26px;border:1px solid var(--panel-line);border-radius:3px;position:relative;
+    background:linear-gradient(180deg,var(--panel),var(--navy-2));transition:transform .3s ease,border-color .3s ease}
+  .dir-card:hover{transform:translateY(-3px);border-color:rgba(201,162,75,.4)}
+  .dir-role{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+  .dir-name{font-family:var(--display);font-size:1.45rem;font-weight:600;color:var(--ivory);margin-top:4px}
+  .dir-contact{font-size:.9rem;color:var(--ivory-dim);margin-top:10px}
+  @media(max-width:900px){.dir-grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:640px){.dir-grid{grid-template-columns:1fr}
+    .agenda-item{flex-direction:column;gap:12px}
+    .agenda-date{width:auto;text-align:left;border-right:none;border-bottom:1px solid var(--panel-line);padding-right:0;padding-bottom:10px;display:flex;gap:10px;align-items:baseline}}
+
   /* ---- Formulaire rendez-vous ---- */
   .rdv-form{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px;max-width:800px}
   .rdv-form .field{display:flex;flex-direction:column;gap:8px}
@@ -326,8 +368,10 @@
       <ul>
         <li><a class="link" href="#presentation">Présentation</a></li>
         <li><a class="link" href="#actualite">Actualités</a></li>
+        <li><a class="link" href="#agenda">Agenda</a></li>
         <li><a class="link" href="#ministeres">Ministères</a></li>
         <li><a class="link" href="#organigramme">Organigramme</a></li>
+        <li><a class="link" href="#annuaire">Annuaire</a></li>
         <li><a class="link" href="#recrutement">Recrutement</a></li>
         <li><a class="link" href="#rdv">Rendez-vous</a></li>
         <li><a class="nav-cta" href="#portail">Portail des déclarations
@@ -435,6 +479,28 @@
 
 <div class="divider"></div>
 
+<!-- ============ AGENDA ============ -->
+<section class="block" id="agenda">
+  <div class="wrap">
+    <span class="eyebrow reveal">Vie de l'État</span>
+    <h2 class="section-title reveal">Agenda &amp; événements</h2>
+    <p class="lede reveal">Les prochains rendez-vous officiels : sessions, réunions et temps forts du gouvernement.</p>
+    <div class="agenda-list" id="agendaList">
+      <div class="agenda-item">
+        <div class="agenda-date"><div class="d">18</div><div class="m">Juin</div></div>
+        <div class="agenda-body"><h3>Conseil des ministres</h3><p>Réunion hebdomadaire du cabinet pour coordonner l'action gouvernementale.</p></div>
+      </div>
+      <div class="agenda-item">
+        <div class="agenda-date"><div class="d">21</div><div class="m">Juin</div></div>
+        <div class="agenda-body"><h3>Audience publique</h3><p>Le tribunal de San Andreas tient une session ouverte aux citoyens.</p></div>
+      </div>
+    </div>
+    <div class="agenda-add"><button id="agendaAddBtn" type="button">+ Ajouter un événement</button></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
 <!-- ============ MINISTÈRES ============ -->
 <section class="block" id="ministeres">
   <div class="wrap">
@@ -497,6 +563,38 @@
     <div class="org-add">
       <button id="orgAddTop" type="button">+ Personne en haut</button>
       <button id="orgAddBottom" type="button">+ Personne en bas</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ ANNUAIRE ============ -->
+<section class="block" id="annuaire">
+  <div class="wrap">
+    <span class="eyebrow reveal">Contacts</span>
+    <h2 class="section-title reveal">Annuaire officiel</h2>
+    <p class="lede reveal">Vos interlocuteurs au sein du gouvernement. Pour toute démarche, contactez le département concerné sur le Discord.</p>
+    <div class="dir-grid" id="dirList">
+      <div class="dir-card">
+        <div class="dir-role">Département de la Justice</div>
+        <div class="dir-name">Joe Rhas</div>
+        <div class="dir-contact">Discord : joe.rhas</div>
+      </div>
+      <div class="dir-card">
+        <div class="dir-role">Département des Finances</div>
+        <div class="dir-name">Xoo Rhas</div>
+        <div class="dir-contact">Discord : xoo.rhas</div>
+      </div>
+      <div class="dir-card">
+        <div class="dir-role">Cabinet du Gouverneur</div>
+        <div class="dir-name">Secrétariat</div>
+        <div class="dir-contact">Discord : cabinet</div>
+      </div>
+    </div>
+    <div class="dir-add"><button id="dirAddBtn" type="button">+ Ajouter un contact</button></div>
+    <div style="text-align:center;margin-top:30px">
+      <a href="https://discord.gg/wwXkcPb5sU" target="_blank" rel="noopener" class="btn btn-ghost">Rejoindre le Discord</a>
     </div>
   </div>
 </section>
@@ -626,6 +724,8 @@
   let adminPassword='';
   const org=document.querySelector('.org');
   const newsList=document.getElementById('newsList');
+  const agendaList=document.getElementById('agendaList');
+  const dirList=document.getElementById('dirList');
   const AVATAR_SVG='<svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>';
 
   function toast(msg){
@@ -661,11 +761,13 @@
       if(data&&data.texts){editEls.forEach(el=>{if(data.texts[el.dataset.ek]!=null)el.innerHTML=data.texts[el.dataset.ek];});}
       if(data&&data.org){org.innerHTML=data.org;org.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));}
       if(data&&data.news&&newsList){newsList.innerHTML=data.news;}
+      if(data&&data.agenda&&agendaList){agendaList.innerHTML=data.agenda;}
+      if(data&&data.annuaire&&dirList){dirList.innerHTML=data.annuaire;}
     }catch(e){}
   }
   // Enregistrement du contenu pour TOUS les visiteurs
   async function saveContent(){
-    const data={texts:{},org:cleanOrgHTML(),news:newsList?cleanContainer(newsList):''};
+    const data={texts:{},org:cleanOrgHTML(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):''};
     editEls.forEach(el=>data.texts[el.dataset.ek]=el.innerHTML);
     toast('Publication en cours…');
     try{
@@ -778,6 +880,57 @@
     }
   }
 
+  // --- Agenda : ajout / édition / suppression d'événements ---
+  function decorateAgenda(){
+    if(!agendaList)return;
+    agendaList.querySelectorAll('.agenda-item').forEach(item=>{
+      item.querySelectorAll('.d,.m,.agenda-body h3,.agenda-body p').forEach(el=>el.contentEditable='true');
+      addCardDel(item,'Supprimer cet événement');
+    });
+  }
+  function undecorateAgenda(){
+    if(!agendaList)return;
+    agendaList.querySelectorAll('.card-del').forEach(b=>b.remove());
+    agendaList.querySelectorAll('.d,.m,.agenda-body h3,.agenda-body p').forEach(el=>el.contentEditable='false');
+  }
+  function addEvent(){
+    const item=document.createElement('div');
+    item.className='agenda-item';
+    item.innerHTML='<div class="agenda-date"><div class="d">00</div><div class="m">Mois</div></div>'+
+      '<div class="agenda-body"><h3>Titre de l\'événement</h3><p>Description de l\'événement…</p></div>';
+    agendaList.appendChild(item);
+    if(editing){
+      item.querySelectorAll('.d,.m,.agenda-body h3,.agenda-body p').forEach(el=>el.contentEditable='true');
+      addCardDel(item,'Supprimer cet événement');
+      item.querySelector('.agenda-body h3').focus();
+    }
+  }
+
+  // --- Annuaire : ajout / édition / suppression de contacts ---
+  function decorateDir(){
+    if(!dirList)return;
+    dirList.querySelectorAll('.dir-card').forEach(card=>{
+      card.querySelectorAll('.dir-role,.dir-name,.dir-contact').forEach(el=>el.contentEditable='true');
+      addCardDel(card,'Supprimer ce contact');
+    });
+  }
+  function undecorateDir(){
+    if(!dirList)return;
+    dirList.querySelectorAll('.card-del').forEach(b=>b.remove());
+    dirList.querySelectorAll('.dir-role,.dir-name,.dir-contact').forEach(el=>el.contentEditable='false');
+  }
+  function addContact(){
+    const card=document.createElement('div');
+    card.className='dir-card';
+    card.innerHTML='<div class="dir-role">Département</div><div class="dir-name">Nom</div><div class="dir-contact">Discord : pseudo</div>';
+    dirList.appendChild(card);
+    if(editing){
+      card.querySelectorAll('.dir-role,.dir-name,.dir-contact').forEach(el=>el.contentEditable='true');
+      addCardDel(card,'Supprimer ce contact');
+      card.querySelector('.dir-name').focus();
+    }
+  }
+
   let editing=false;
   const toggleBtn=document.getElementById('editToggle');
   const hint=document.getElementById('editHint');
@@ -786,7 +939,7 @@
     document.body.classList.toggle('editing',on);
     if(on)document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
     editEls.forEach(el=>el.contentEditable=on?'true':'false');
-    if(on){decorateOrg();decorateNews();}else{undecorateOrg();undecorateNews();}
+    if(on){decorateOrg();decorateNews();decorateAgenda();decorateDir();}else{undecorateOrg();undecorateNews();undecorateAgenda();undecorateDir();}
     toggleBtn.textContent=on?'✕ Quitter':'✎ Éditer';
     hint.textContent=on?'Modifiez les textes · ajoutez personnes & articles':'Modifiez le site directement';
   }
@@ -799,6 +952,10 @@
   document.getElementById('orgAddBottom').addEventListener('click',()=>addTier('bottom'));
   const newsAddBtn=document.getElementById('newsAddBtn');
   if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
+  const agendaAddBtn=document.getElementById('agendaAddBtn');
+  if(agendaAddBtn)agendaAddBtn.addEventListener('click',addEvent);
+  const dirAddBtn=document.getElementById('dirAddBtn');
+  if(dirAddBtn)dirAddBtn.addEventListener('click',addContact);
 
   /* ---- Accès à l'édition : mot de passe vérifié côté serveur ---- */
   // L'éditeur s'ouvre via une URL finissant par #admin, ou avec Ctrl+Maj+E.
