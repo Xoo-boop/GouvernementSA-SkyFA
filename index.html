@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gouvernement de San Andreas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A0A0B;          /* fond noir profond */
+    --navy-2:#121214;        /* anthracite */
+    --panel:#1A1A1F;         /* cartes anthracite */
+    --panel-line:rgba(201,162,75,.20);  /* filets bronze */
+    --gold:#C9A24B;
+    --gold-bright:#E6C66E;
+    --rouge:#E3795F;         /* accent corail (alertes / échéances) */
+    --ivory:#ECE6D6;
+    --ivory-dim:#A8A496;
+    --muted:#6F6F78;
+    --display:"Cormorant Garamond",Georgia,serif;
+    --body:"Inter",system-ui,sans-serif;
+    --maxw:1140px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--navy);
+    color:var(--ivory);
+    font-family:var(--body);
+    font-weight:300;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+
+  /* ---- Eyebrows / shared type ---- */
+  .eyebrow{
+    font-size:.72rem;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold);font-weight:500;
+    display:inline-flex;align-items:center;gap:14px;
+  }
+  .eyebrow::before{content:"";width:34px;height:1px;background:var(--gold);opacity:.6}
+  h2.section-title{
+    font-family:var(--display);font-weight:600;
+    font-size:clamp(2rem,4.4vw,3.1rem);line-height:1.08;
+    color:var(--ivory);margin:.5rem 0 0;letter-spacing:.01em;
+  }
+  .lede{color:var(--ivory-dim);font-size:1.05rem;max-width:60ch;margin-top:1.1rem}
+
+  /* ---- Header ---- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    background:rgba(11,19,34,0);backdrop-filter:blur(0);
+    transition:background .4s ease,border-color .4s ease,backdrop-filter .4s ease;
+    border-bottom:1px solid transparent;
+  }
+  header.scrolled{
+    background:rgba(11,19,34,.82);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--panel-line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
+  .brand{display:flex;align-items:center;gap:13px;font-family:var(--display)}
+  .brand .crest{width:34px;height:34px;flex:none}
+  .brand .name{font-size:1.18rem;font-weight:600;letter-spacing:.02em;line-height:1.1}
+  .brand .sub{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold);font-family:var(--body);font-weight:500}
+  nav ul{display:flex;gap:34px;list-style:none;align-items:center}
+  nav a.link{font-size:.84rem;letter-spacing:.04em;color:var(--ivory-dim);position:relative;padding:6px 0;transition:color .25s}
+  nav a.link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .3s ease}
+  nav a.link:hover{color:var(--ivory)}
+  nav a.link:hover::after{width:100%}
+  .btn{
+    font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.04em;
+    padding:11px 22px;border-radius:2px;cursor:pointer;display:inline-flex;
+    align-items:center;gap:9px;transition:all .28s ease;border:1px solid var(--gold);
+  }
+  .btn-gold{background:var(--gold);color:var(--navy)}
+  .btn-gold:hover{background:var(--gold-bright);border-color:var(--gold-bright);transform:translateY(-1px)}
+  .btn-ghost{background:transparent;color:var(--gold);border-color:rgba(201,162,75,.4)}
+  .btn-ghost:hover{border-color:var(--gold);background:rgba(201,162,75,.08)}
+  .menu-toggle{display:none;background:none;border:none;color:var(--ivory);cursor:pointer}
+
+  /* ---- Hero ---- */
+  .hero{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:120px 0 80px;overflow:hidden}
+  .hero-bg{position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 38%,rgba(201,162,75,.10),transparent 70%),
+      linear-gradient(180deg,var(--navy-2),var(--navy) 60%);
+  }
+  .hero-bg::after{content:"";position:absolute;inset:0;
+    background-image:radial-gradient(rgba(201,162,75,.05) 1px,transparent 1px);
+    background-size:34px 34px;opacity:.5;mask-image:radial-gradient(ellipse 60% 60% at 50% 40%,black,transparent 75%)}
+  .hero-inner{position:relative;z-index:1;max-width:760px}
+  .seal{width:148px;height:148px;margin:0 auto 30px}
+  .hero h1{font-family:var(--display);font-weight:600;
+    font-size:clamp(2.8rem,7vw,5rem);line-height:1.02;letter-spacing:.005em;
+    background:linear-gradient(100deg,#9A7B2E 0%,#E6C66E 28%,#FFF1C4 47%,#E6C66E 66%,#9A7B2E 100%);
+    background-size:220% auto;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    animation:shimmer 6.5s linear infinite}
+  .hero h1 em{font-style:italic;font-weight:500}
+  @keyframes shimmer{to{background-position:220% center}}
+  .devise{font-family:var(--display);font-style:italic;font-size:clamp(1.1rem,2.4vw,1.5rem);
+    color:var(--ivory-dim);margin-top:18px;letter-spacing:.02em}
+  .devise::before,.devise::after{content:none}
+  .hero p.intro{color:var(--ivory-dim);max-width:54ch;margin:26px auto 0;font-size:1.02rem}
+  .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+  .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:1;
+    font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
+    display:flex;flex-direction:column;align-items:center;gap:9px}
+  .scroll-cue .bar{width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:cue 2.4s ease-in-out infinite}
+  @keyframes cue{0%,100%{opacity:.3;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
+
+  /* ---- Section frame ---- */
+  section.block{padding:108px 0;position:relative}
+  .divider{height:1px;background:linear-gradient(90deg,transparent,var(--panel-line),transparent);max-width:var(--maxw);margin:0 auto}
+
+  /* ---- Présentation ---- */
+  #presentation .grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;margin-top:10px}
+  .pillars{display:grid;gap:22px}
+  .pillar{display:flex;gap:18px;align-items:flex-start;padding:22px;border:1px solid var(--panel-line);border-radius:3px;background:linear-gradient(180deg,rgba(255,255,255,.015),transparent)}
+  .pillar .ico{flex:none;width:42px;height:42px;color:var(--gold)}
+  .pillar h4{font-family:var(--display);font-size:1.32rem;font-weight:600;color:var(--ivory);margin-bottom:4px}
+  .pillar p{font-size:.92rem;color:var(--ivory-dim)}
+  .stats{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+  .stat .num{font-family:var(--display);font-size:2.6rem;font-weight:600;color:var(--gold-bright);line-height:1}
+  .stat .lbl{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+
+  /* ---- Ministères ---- */
+  .min-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px}
+  .min-card{padding:30px 28px;border:1px solid var(--panel-line);border-radius:3px;
+    background:linear-gradient(180deg,var(--panel),var(--navy-2));position:relative;overflow:hidden;
+    transition:transform .3s ease,border-color .3s ease}
+  .min-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:2px;
+    background:linear-gradient(90deg,var(--gold),transparent);transform:scaleX(0);transform-origin:left;transition:transform .4s ease}
+  .min-card:hover{transform:translateY(-4px);border-color:rgba(201,162,75,.4)}
+  .min-card:hover::before{transform:scaleX(1)}
+  .min-card .ico{width:38px;height:38px;color:var(--gold);margin-bottom:18px}
+  .min-card h3{font-family:var(--display);font-size:1.5rem;font-weight:600;color:var(--ivory);line-height:1.15}
+  .min-card .tag{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-top:4px;display:block}
+  .min-card p{font-size:.9rem;color:var(--ivory-dim);margin-top:14px}
+
+  /* ---- Organigramme ---- */
+  #organigramme{background:var(--navy-2)}
+  .org{margin-top:56px;display:flex;flex-direction:column;align-items:center;gap:0}
+  .org-tier{display:flex;justify-content:center;gap:24px;flex-wrap:wrap;width:100%}
+  .org-connector{width:1px;height:38px;background:linear-gradient(var(--gold),rgba(201,162,75,.15))}
+  .org-card{text-align:center;padding:24px 30px;border:1px solid var(--panel-line);border-radius:3px;
+    background:var(--panel);min-width:210px}
+  .org-card.head{border-color:rgba(201,162,75,.5);box-shadow:0 0 40px rgba(201,162,75,.08)}
+  .org-card .role{font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+  .org-card .person{font-family:var(--display);font-size:1.4rem;font-weight:600;color:var(--ivory);margin-top:6px}
+  .org-card.head .person{font-size:1.7rem}
+  .org-card .desc{font-size:.8rem;color:var(--muted);margin-top:4px}
+  .org-card .avatar{width:56px;height:56px;display:block;margin:0 auto 12px}
+  .org-card.head .avatar{width:68px;height:68px}
+
+  /* ---- Recrutement ---- */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:54px;counter-reset:step}
+  .step{position:relative;padding-top:30px}
+  .step .n{font-family:var(--display);font-size:.95rem;color:var(--gold);letter-spacing:.1em;
+    border:1px solid var(--gold);width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+  .step h4{font-family:var(--display);font-size:1.35rem;font-weight:600;color:var(--ivory)}
+  .step p{font-size:.88rem;color:var(--ivory-dim);margin-top:8px}
+  .step::after{content:"";position:absolute;top:48px;left:54px;right:-12px;height:1px;background:var(--panel-line)}
+  .step:last-child::after{display:none}
+  .recruit-cta{margin-top:60px;text-align:center;padding:54px 30px;border:1px solid var(--panel-line);border-radius:3px;
+    background:radial-gradient(ellipse 80% 120% at 50% 0%,rgba(201,162,75,.08),transparent 70%)}
+  .recruit-cta h3{font-family:var(--display);font-size:clamp(1.7rem,3.5vw,2.4rem);font-weight:600;color:var(--ivory)}
+  .recruit-cta p{color:var(--ivory-dim);max-width:50ch;margin:14px auto 28px}
+
+  /* ---- Portail ---- */
+  #portail .portal-box{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;align-items:center;
+    padding:56px;border:1px solid var(--panel-line);border-radius:4px;
+    background:linear-gradient(120deg,var(--panel),var(--navy-2));margin-top:46px}
+  #portail h2.section-title{margin-bottom:0}
+  .portal-box .icon-big{width:90px;height:90px;color:var(--gold);justify-self:center}
+
+  /* ---- Footer ---- */
+  footer{border-top:1px solid var(--panel-line);padding:60px 0 40px;background:var(--navy-2)}
+  .foot-grid{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+  .foot-brand{max-width:320px}
+  .foot-brand .name{font-family:var(--display);font-size:1.3rem;font-weight:600;display:flex;align-items:center;gap:11px}
+  .foot-brand p{color:var(--muted);font-size:.85rem;margin-top:14px}
+  .foot-col h5{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+  .foot-col a{display:block;color:var(--ivory-dim);font-size:.88rem;margin-bottom:10px;transition:color .2s}
+  .foot-col a:hover{color:var(--ivory)}
+  .foot-bottom{margin-top:48px;padding-top:24px;border-top:1px solid var(--panel-line);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;color:var(--muted);font-size:.78rem}
+
+  /* ---- Reveal animation ---- */
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.in{opacity:1;transform:none}
+
+  /* ---- Responsive ---- */
+  @media(max-width:900px){
+    #presentation .grid,#portail .portal-box{grid-template-columns:1fr;gap:36px}
+    .min-grid{grid-template-columns:repeat(2,1fr)}
+    .steps{grid-template-columns:repeat(2,1fr)}
+    .step::after{display:none}
+  }
+  @media(max-width:640px){
+    nav ul{display:none}
+    .menu-toggle{display:block}
+    .min-grid,.steps{grid-template-columns:1fr}
+    #portail .portal-box{padding:34px 24px}
+    .stats{gap:28px}
+    section.block{padding:72px 0}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    .reveal{opacity:1;transform:none}
+    html{scroll-behavior:auto}
+  }
+  /* ---- Mode édition ---- */
+  #editBar{position:fixed;right:18px;bottom:18px;z-index:100;display:flex;gap:10px;align-items:center;
+    background:rgba(18,18,20,.94);backdrop-filter:blur(10px);border:1px solid var(--panel-line);
+    border-radius:7px;padding:9px 12px;box-shadow:0 10px 34px rgba(0,0,0,.55)}
+  #editBar .hint{font-size:.72rem;color:var(--muted);max-width:170px;line-height:1.3}
+  #editBar button{font-family:var(--body);font-size:.78rem;font-weight:500;letter-spacing:.03em;
+    padding:8px 14px;border-radius:3px;cursor:pointer;border:1px solid var(--gold);background:transparent;color:var(--gold);transition:all .2s;white-space:nowrap}
+  #editBar button:hover{background:rgba(201,162,75,.1)}
+  #editBar button.primary{background:var(--gold);color:var(--navy);border-color:var(--gold)}
+  #editBar button.primary:hover{background:var(--gold-bright)}
+  #editBar .save-only{display:none}
+  body.editing #editBar .save-only{display:inline-flex}
+  body.editing [data-ek]{outline:1px dashed rgba(201,162,75,.5);outline-offset:3px;border-radius:2px;cursor:text}
+  body.editing [data-ek]:hover{outline-color:var(--gold);background:rgba(201,162,75,.05)}
+  body.editing [data-ek]:focus{outline:1.5px solid var(--gold);background:rgba(201,162,75,.07)}
+  .edit-toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%);z-index:101;
+    background:var(--gold);color:var(--navy);padding:10px 22px;border-radius:4px;font-size:.82rem;font-weight:600;
+    opacity:0;transition:opacity .3s;pointer-events:none}
+  .edit-toast.show{opacity:1}
+  .org-card{position:relative}
+  .card-del{position:absolute;top:-11px;right:-11px;width:25px;height:25px;border-radius:50%;
+    background:var(--rouge);color:#1a1a1f;border:none;cursor:pointer;font-size:12px;font-weight:700;line-height:1;
+    align-items:center;justify-content:center;z-index:6;display:none}
+  body.editing .card-del{display:flex}
+  .org-add{display:none;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:32px}
+  body.editing .org-add{display:flex}
+  .org-add button{font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+    padding:11px 24px;border-radius:3px;cursor:pointer;border:1px dashed var(--gold);
+    background:rgba(201,162,75,.06);color:var(--gold);transition:all .2s}
+  .org-add button:hover{background:rgba(201,162,75,.14);border-style:solid}
+  .tier-add{display:none;align-self:center;width:46px;min-width:46px;height:46px;border-radius:50%;
+    border:1px dashed var(--gold);background:rgba(201,162,75,.06);color:var(--gold);font-size:22px;line-height:1;cursor:pointer;transition:all .2s}
+  body.editing .tier-add{display:inline-flex;align-items:center;justify-content:center}
+  .tier-add:hover{background:rgba(201,162,75,.14);border-style:solid}
+
+  /* ---- Actualités ---- */
+  .news-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;margin-top:48px}
+  .news-card{padding:28px;border:1px solid var(--panel-line);border-radius:3px;position:relative;
+    background:linear-gradient(180deg,var(--panel),var(--navy-2));transition:transform .3s ease,border-color .3s ease}
+  .news-card:hover{transform:translateY(-3px);border-color:rgba(201,162,75,.4)}
+  .news-meta{display:flex;gap:14px;align-items:center;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+  .news-meta .news-cat{color:var(--muted);border-left:1px solid var(--panel-line);padding-left:14px}
+  .news-title{font-family:var(--display);font-size:1.6rem;font-weight:600;color:var(--ivory);line-height:1.16}
+  .news-body{font-size:.94rem;color:var(--ivory-dim);margin-top:12px}
+  .news-add{display:none;justify-content:center;margin-top:34px}
+  body.editing .news-add{display:flex}
+  .news-add button{font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.03em;
+    padding:11px 24px;border-radius:3px;cursor:pointer;border:1px dashed var(--gold);
+    background:rgba(201,162,75,.06);color:var(--gold);transition:all .2s}
+  .news-add button:hover{background:rgba(201,162,75,.14);border-style:solid}
+  @media(max-width:640px){.news-grid{grid-template-columns:1fr}}
+
+  /* ---- Formulaire rendez-vous ---- */
+  .rdv-form{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px;max-width:800px}
+  .rdv-form .field{display:flex;flex-direction:column;gap:8px}
+  .rdv-form .full{grid-column:1/-1}
+  .rdv-form label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+  .rdv-form label .opt{text-transform:none;letter-spacing:0;color:var(--muted);font-size:.72rem}
+  .rdv-form input,.rdv-form select,.rdv-form textarea{
+    font-family:var(--body);font-size:.95rem;color:var(--ivory);background:var(--panel);
+    border:1px solid var(--panel-line);border-radius:3px;padding:12px 14px;transition:border-color .2s;width:100%}
+  .rdv-form input:focus,.rdv-form select:focus,.rdv-form textarea:focus{outline:none;border-color:var(--gold)}
+  .rdv-form textarea{resize:vertical}
+  .rdv-form option{background:var(--panel);color:var(--ivory)}
+  .rdv-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:6px}
+  .rdv-actions .btn{border:none}
+  .rdv-status{font-size:.85rem;color:var(--ivory-dim)}
+  .rdv-status.ok{color:var(--gold-bright)}
+  .rdv-status.err{color:var(--rouge)}
+
+  @media print{#editBar,.edit-toast,.card-del,.org-add,.tier-add{display:none!important}}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header id="header">
+  <div class="wrap nav">
+    <a href="#top" class="brand">
+      <svg class="crest" viewBox="0 0 100 100" aria-hidden="true">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A24B" stroke-width="2"/>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="#C9A24B" stroke-width="1" opacity=".5"/>
+        <path d="M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z" fill="#E3C36A"/>
+      </svg>
+      <span>
+        <span class="name">San Andreas</span><br>
+        <span class="sub">Gouvernement</span>
+      </span>
+    </a>
+    <nav>
+      <ul>
+        <li><a class="link" href="#presentation">Présentation</a></li>
+        <li><a class="link" href="#actualite">Actualités</a></li>
+        <li><a class="link" href="#ministeres">Ministères</a></li>
+        <li><a class="link" href="#organigramme">Organigramme</a></li>
+        <li><a class="link" href="#recrutement">Recrutement</a></li>
+        <li><a class="link" href="#rdv">Rendez-vous</a></li>
+        <li><a class="btn btn-ghost" href="#portail">Portail des déclarations</a></li>
+      </ul>
+    </nav>
+    <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('nav ul').classList.toggle('open')">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <svg class="seal" viewBox="0 0 200 200" aria-label="Sceau du Gouvernement de San Andreas">
+      <defs>
+        <path id="ring" d="M100,100 m-74,0 a74,74 0 1,1 148,0 a74,74 0 1,1 -148,0"/>
+        <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#E3C36A"/><stop offset="1" stop-color="#B8893A"/>
+        </linearGradient>
+      </defs>
+      <circle cx="100" cy="100" r="92" fill="none" stroke="url(#g)" stroke-width="2.5"/>
+      <circle cx="100" cy="100" r="84" fill="none" stroke="#C9A24B" stroke-width="1" opacity=".45"/>
+      <circle cx="100" cy="100" r="58" fill="none" stroke="#C9A24B" stroke-width="1.2" opacity=".7"/>
+      <text font-family="Inter,sans-serif" font-size="10.5" letter-spacing="3.5" fill="#C9A24B" font-weight="500">
+        <textPath href="#ring" startOffset="0%">GOUVERNEMENT&#160;&#160;&#8226;&#160;&#160;RÉPUBLIQUE DE SAN ANDREAS&#160;&#160;&#8226;&#160;&#160;</textPath>
+      </text>
+      <!-- star -->
+      <path d="M100 58 L108 86 L137 86 L113 103 L122 131 L100 114 L78 131 L87 103 L63 86 L92 86 Z" fill="url(#g)"/>
+      <!-- laurel hints -->
+      <path d="M72 132 Q60 118 64 102" fill="none" stroke="#C9A24B" stroke-width="1.6" opacity=".8"/>
+      <path d="M128 132 Q140 118 136 102" fill="none" stroke="#C9A24B" stroke-width="1.6" opacity=".8"/>
+    </svg>
+    <h1>Gouvernement<br>de <em>San&nbsp;Andreas</em></h1>
+    <p class="devise">Honneur · Travail · Solidarité</p>
+    <p class="intro">L'institution officielle qui régit la vie civile, économique et judiciaire de l'État. Découvrez sa structure, ses ministères et rejoignez ses rangs.</p>
+    <div class="hero-cta">
+      <a href="https://discord.gg/wwXkcPb5sU" target="_blank" rel="noopener" class="btn btn-gold">Rejoindre le gouvernement
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a href="#presentation" class="btn btn-ghost">En savoir plus</a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span>Découvrir</span><span class="bar"></span></div>
+</section>
+
+<!-- ============ PRÉSENTATION ============ -->
+<section class="block" id="presentation">
+  <div class="wrap">
+    <span class="eyebrow reveal">L'institution</span>
+    <h2 class="section-title reveal">Au service de l'État et de ses citoyens</h2>
+    <div class="grid">
+      <div class="reveal">
+        <p class="lede">Le Gouvernement de San Andreas est l'autorité centrale chargée d'organiser la sécurité, la justice, la santé et l'économie de l'État. Il fixe les règles, encadre les institutions et veille au bon fonctionnement de la vie publique.</p>
+        <div class="stats">
+          <div class="stat"><div class="num">02</div><div class="lbl">Départements</div></div>
+          <div class="stat"><div class="num">24/7</div><div class="lbl">Services actifs</div></div>
+          <div class="stat"><div class="num">100%</div><div class="lbl">RP &amp; immersion</div></div>
+        </div>
+      </div>
+      <div class="pillars reveal">
+        <div class="pillar">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg>
+          <div><h4>Sécurité</h4><p>Maintien de l'ordre et protection des citoyens sur l'ensemble du territoire.</p></div>
+        </div>
+        <div class="pillar">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v18M5 7l7-4 7 4M4 21h16M6 21V10M18 21V10"/></svg>
+          <div><h4>Justice</h4><p>Application de la loi et garantie de l'équité dans toutes les procédures.</p></div>
+        </div>
+        <div class="pillar">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg>
+          <div><h4>Économie</h4><p>Régulation des entreprises, fiscalité et déclarations hebdomadaires.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ ACTUALITÉS ============ -->
+<section class="block" id="actualite">
+  <div class="wrap">
+    <span class="eyebrow reveal">Communiqués officiels</span>
+    <h2 class="section-title reveal">Actualités du gouvernement</h2>
+    <p class="lede reveal">Les dernières annonces, décisions et communiqués de l'administration de San Andreas.</p>
+    <div class="news-grid" id="newsList">
+      <article class="news-card">
+        <div class="news-meta"><span class="news-date">12 juin 2026</span><span class="news-cat">Communiqué</span></div>
+        <h3 class="news-title">Lancement du portail gouvernemental</h3>
+        <p class="news-body">Le gouvernement de San Andreas met en ligne son portail officiel : présentation des départements, organigramme et prise de rendez-vous en ligne.</p>
+      </article>
+      <article class="news-card">
+        <div class="news-meta"><span class="news-date">10 juin 2026</span><span class="news-cat">Finances</span></div>
+        <h3 class="news-title">Déclarations hebdomadaires : rappel des échéances</h3>
+        <p class="news-body">Les entreprises sont invitées à transmettre leur déclaration via le portail des impôts avant la fermeture du créneau hebdomadaire.</p>
+      </article>
+    </div>
+    <div class="news-add"><button id="newsAddBtn" type="button">+ Publier un article</button></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ MINISTÈRES ============ -->
+<section class="block" id="ministeres">
+  <div class="wrap">
+    <span class="eyebrow reveal">Pôles de l'État</span>
+    <h2 class="section-title reveal">Départements</h2>
+    <p class="lede reveal">Le gouvernement s'organise autour de deux départements clés. Cliquez pour en savoir plus ou postuler.</p>
+    <div class="min-grid">
+      <div class="min-card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3v18M5 7l7-4 7 4M4 21h16M6 21V10M18 21V10"/></svg>
+        <span class="tag">Loi &amp; droit</span>
+        <h3>Département de la Justice</h3>
+        <p>Tribunaux, avocats et procureurs. Veille au respect du code pénal de San Andreas.</p>
+      </div>
+      <div class="min-card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg>
+        <span class="tag">Finances</span>
+        <h3>Département des Finances</h3>
+        <p>Fiscalité, entreprises et déclarations hebdomadaires. Lié au portail des déclarations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ORGANIGRAMME ============ -->
+<section class="block" id="organigramme">
+  <div class="wrap">
+    <span class="eyebrow reveal">Hiérarchie</span>
+    <h2 class="section-title reveal">Organigramme du gouvernement</h2>
+    <p class="lede reveal">La chaîne de commandement, du Gouverneur aux directions ministérielles.</p>
+    <div class="org">
+      <div class="org-tier reveal">
+        <div class="org-card head">
+          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
+          <div class="role">Gouverneur</div>
+          <div class="person">Inconnu</div>
+        </div>
+      </div>
+      <div class="org-connector reveal"></div>
+      <div class="org-tier reveal">
+        <div class="org-card">
+          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
+          <div class="role">Vice-Gouverneur</div>
+          <div class="person">Inconnu</div>
+        </div>
+      </div>
+      <div class="org-connector reveal"></div>
+      <div class="org-tier reveal">
+        <div class="org-card">
+          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
+          <div class="role">Département de la Justice</div>
+          <div class="person">Joe Rhas</div>
+        </div>
+        <div class="org-card">
+          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
+          <div class="role">Département des Finances</div>
+          <div class="person">Xoo Rhas</div>
+        </div>
+      </div>
+    </div>
+    <div class="org-add">
+      <button id="orgAddTop" type="button">+ Personne en haut</button>
+      <button id="orgAddBottom" type="button">+ Personne en bas</button>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ RECRUTEMENT ============ -->
+<section class="block" id="recrutement">
+  <div class="wrap">
+    <span class="eyebrow reveal">Carrières</span>
+    <h2 class="section-title reveal">Recrutement &amp; candidatures</h2>
+    <p class="lede reveal">Le gouvernement recrute en continu. Quatre étapes vous séparent d'un poste officiel.</p>
+    <div class="steps">
+      <div class="step reveal"><div class="n">1</div><h4>Candidature</h4><p>Déposez votre dossier IC/RP via le formulaire ou notre Discord.</p></div>
+      <div class="step reveal"><div class="n">2</div><h4>Entretien</h4><p>Un membre du cabinet vous reçoit pour évaluer votre motivation.</p></div>
+      <div class="step reveal"><div class="n">3</div><h4>Formation</h4><p>Période d'intégration et de prise en main de vos futures fonctions.</p></div>
+      <div class="step reveal"><div class="n">4</div><h4>Affectation</h4><p>Nomination officielle et attribution de votre grade au sein d'un ministère.</p></div>
+    </div>
+    <div class="recruit-cta reveal">
+      <h3>Prêt à servir l'État ?</h3>
+      <p>Rejoignez le Discord officiel pour déposer votre candidature et suivre les ouvertures de postes en temps réel.</p>
+      <a href="https://discord.gg/wwXkcPb5sU" target="_blank" rel="noopener" class="btn btn-gold">Déposer ma candidature
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ RENDEZ-VOUS ============ -->
+<section class="block" id="rdv">
+  <div class="wrap">
+    <span class="eyebrow reveal">Démarches</span>
+    <h2 class="section-title reveal">Prendre un rendez-vous</h2>
+    <p class="lede reveal">Pour préserver l'immersion RP, les rendez-vous se prennent directement sur le Discord du gouvernement. Choisissez le département concerné et échangez avec un membre de l'administration.</p>
+    <div class="recruit-cta reveal" style="margin-top:46px">
+      <h3>Rendez-vous sur Discord</h3>
+      <p>Rejoignez le serveur, ouvrez la rubrique rendez-vous et prenez contact avec le Cabinet, la Justice ou les Finances.</p>
+      <a href="https://discord.gg/wwXkcPb5sU" target="_blank" rel="noopener" class="btn btn-gold">Prendre rendez-vous sur Discord
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ============ PORTAIL ============ -->
+<section class="block" id="portail">
+  <div class="wrap">
+    <span class="eyebrow reveal">Services en ligne</span>
+    <h2 class="section-title reveal">Portail des déclarations</h2>
+    <div class="portal-box reveal">
+      <div>
+        <p class="lede" style="margin-top:0">Les entreprises de San Andreas effectuent leurs déclarations fiscales hebdomadaires directement sur le portail officiel. Connexion Discord, suivi des échéances et historique des déclarations.</p>
+        <a href="https://declarationimpots.dofskyfa.fr" target="_blank" rel="noopener" class="btn btn-gold" style="margin-top:28px">Accéder au portail
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+        </a>
+      </div>
+      <svg class="icon-big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <div class="name">
+        <svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A24B" stroke-width="2"/>
+          <path d="M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z" fill="#E3C36A"/>
+        </svg>
+        San Andreas
+      </div>
+      <p>Le portail officiel du Gouvernement de San Andreas — serveur RP SkyFA. Honneur · Travail · Solidarité.</p>
+    </div>
+    <div class="foot-col">
+      <h5>Navigation</h5>
+      <a href="#presentation">Présentation</a>
+      <a href="#ministeres">Ministères</a>
+      <a href="#organigramme">Organigramme</a>
+      <a href="#recrutement">Recrutement</a>
+    </div>
+    <div class="foot-col">
+      <h5>Services</h5>
+      <a href="#portail">Portail des déclarations</a>
+      <a href="https://discord.gg/wwXkcPb5sU" target="_blank" rel="noopener">Discord officiel</a>
+      <a href="#">Règlement de l'État</a>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    <span>© 2026 Gouvernement de San Andreas — SkyFA. Univers fictif RP.</span>
+    <span>Conçu pour l'immersion roleplay.</span>
+  </div>
+</footer>
+
+<!-- ============ BARRE D'ÉDITION ============ -->
+<div id="editBar">
+  <span class="hint" id="editHint">Modifiez le site directement</span>
+  <button id="editToggle">✎ Éditer</button>
+  <button class="primary save-only" id="editSave">Enregistrer</button>
+  <button class="save-only" id="editReset">Réinitialiser</button>
+</div>
+<div class="edit-toast" id="editToast"></div>
+
+<script>
+  // Header background on scroll
+  const header=document.getElementById('header');
+  const onScroll=()=>header.classList.toggle('scrolled',window.scrollY>40);
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // Scroll reveal
+  const io=new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+  },{threshold:.14});
+  document.querySelectorAll('.reveal').forEach((el,i)=>{
+    el.style.transitionDelay=(Math.min(i%5,4)*0.06)+'s';
+    io.observe(el);
+  });
+
+  /* ---- Mode édition directe ---- */
+  const EDIT_SEL='h1, .devise, .hero .intro, .section-title, .lede, .pillar h4, .pillar p, .stat .num, .stat .lbl, .min-card .tag, .min-card h3, .min-card p, .step h4, .step p, .recruit-cta h3, .recruit-cta p, .portal-box .lede, .foot-brand p';
+  const STORE_KEY='sag_site_content_v1';
+  const ORG_KEY='sag_org_v1';
+  const NEWS_KEY='sag_news_v1';
+  const org=document.querySelector('.org');
+  const newsList=document.getElementById('newsList');
+  const AVATAR_SVG='<svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>';
+
+  function toast(msg){
+    const t=document.getElementById('editToast');
+    t.textContent=msg;t.classList.add('show');
+    clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  // --- Restauration des contenus structurés (organigramme + actualités) AVANT l'indexation des textes ---
+  try{
+    const o=localStorage.getItem(ORG_KEY);
+    if(o){org.innerHTML=o;org.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));}
+  }catch(e){}
+  try{
+    const n=localStorage.getItem(NEWS_KEY);
+    if(n && newsList){newsList.innerHTML=n;}
+  }catch(e){}
+
+  // Clés d'édition stables : portée par section, pour résister à l'ajout de nouvelles sections
+  const editEls=[...document.querySelectorAll(EDIT_SEL)];
+  const _ekCount={};
+  editEls.forEach(el=>{
+    const host=el.closest('section[id]')||el.closest('footer')||el.closest('header')||document.body;
+    const scope=host.id||host.tagName.toLowerCase();
+    _ekCount[scope]=(_ekCount[scope]||0)+1;
+    el.dataset.ek=scope+'-'+_ekCount[scope];
+  });
+
+  function loadContent(){
+    try{
+      const raw=localStorage.getItem(STORE_KEY);if(!raw)return;
+      const data=JSON.parse(raw);
+      editEls.forEach(el=>{if(data[el.dataset.ek]!=null)el.innerHTML=data[el.dataset.ek];});
+    }catch(e){}
+  }
+  function cleanContainer(el){
+    const c=el.cloneNode(true);
+    c.querySelectorAll('.card-del,.tier-add').forEach(b=>b.remove());
+    c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
+    return c.innerHTML;
+  }
+  function cleanOrgHTML(){return cleanContainer(org);}
+  function saveContent(){
+    try{
+      const data={};editEls.forEach(el=>data[el.dataset.ek]=el.innerHTML);
+      localStorage.setItem(STORE_KEY,JSON.stringify(data));
+      localStorage.setItem(ORG_KEY,cleanOrgHTML());
+      if(newsList)localStorage.setItem(NEWS_KEY,cleanContainer(newsList));
+      toast('Modifications enregistrées ✓');
+    }catch(e){toast('Sauvegarde indisponible dans cet aperçu');}
+  }
+  function resetContent(){
+    if(!confirm('Réinitialiser tout le contenu modifié ?'))return;
+    try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(ORG_KEY);localStorage.removeItem(NEWS_KEY);}catch(e){}
+    location.reload();
+  }
+
+  // --- Édition de l'organigramme : ajout / suppression de personnes et de niveaux ---
+  function makeCard(role,name){
+    const card=document.createElement('div');
+    card.className='org-card';
+    card.innerHTML=AVATAR_SVG+'<div class="role">'+role+'</div><div class="person">'+name+'</div>';
+    return card;
+  }
+  function addDelBtn(card){
+    if(card.querySelector('.card-del'))return;
+    const b=document.createElement('button');
+    b.className='card-del';b.type='button';b.title='Supprimer cette personne';b.textContent='✕';
+    b.addEventListener('click',()=>{
+      const tier=card.closest('.org-tier');
+      card.remove();
+      if(tier && !tier.querySelector('.org-card')){tier.remove();normalizeConnectors();}
+    });
+    card.appendChild(b);
+  }
+  function decorateCard(card){
+    card.querySelectorAll('.role,.person').forEach(el=>el.contentEditable='true');
+    addDelBtn(card);
+  }
+  function addTierAddBtn(tier){
+    if(tier.querySelector('.tier-add'))return;
+    const b=document.createElement('button');
+    b.className='tier-add';b.type='button';b.title='Ajouter une personne dans cette rangée';b.textContent='+';
+    b.addEventListener('click',()=>{
+      const card=makeCard('Poste','Nom du membre');
+      tier.insertBefore(card,b);
+      decorateCard(card);card.querySelector('.person').focus();
+    });
+    tier.appendChild(b);
+  }
+  function normalizeConnectors(){
+    org.querySelectorAll('.org-connector').forEach(c=>c.remove());
+    const tiers=[...org.querySelectorAll('.org-tier')];
+    tiers.forEach((t,i)=>{
+      if(i>0){const c=document.createElement('div');c.className='org-connector in';org.insertBefore(c,t);}
+    });
+  }
+  function addTier(where){
+    const tier=document.createElement('div');
+    tier.className='org-tier in';
+    tier.appendChild(makeCard('Poste','Nom du membre'));
+    if(where==='top')org.insertBefore(tier,org.firstChild);
+    else org.appendChild(tier);
+    normalizeConnectors();
+    if(editing){decorateCard(tier.querySelector('.org-card'));addTierAddBtn(tier);tier.querySelector('.person').focus();}
+  }
+  function decorateOrg(){
+    org.querySelectorAll('.org-tier').forEach(tier=>{
+      tier.querySelectorAll('.org-card').forEach(decorateCard);
+      addTierAddBtn(tier);
+    });
+  }
+  function undecorateOrg(){
+    org.querySelectorAll('.card-del,.tier-add').forEach(b=>b.remove());
+    org.querySelectorAll('.org-card .role, .org-card .person').forEach(el=>el.contentEditable='false');
+  }
+
+  // --- Actualités : publication / édition / suppression d'articles ---
+  function addCardDel(card,label){
+    if(card.querySelector('.card-del'))return;
+    const b=document.createElement('button');
+    b.className='card-del';b.type='button';b.title=label||'Supprimer';b.textContent='✕';
+    b.addEventListener('click',()=>card.remove());
+    card.appendChild(b);
+  }
+  function decorateNews(){
+    if(!newsList)return;
+    newsList.querySelectorAll('.news-card').forEach(card=>{
+      card.querySelectorAll('.news-date,.news-cat,.news-title,.news-body').forEach(el=>el.contentEditable='true');
+      addCardDel(card,'Supprimer cet article');
+    });
+  }
+  function undecorateNews(){
+    if(!newsList)return;
+    newsList.querySelectorAll('.card-del').forEach(b=>b.remove());
+    newsList.querySelectorAll('.news-date,.news-cat,.news-title,.news-body').forEach(el=>el.contentEditable='false');
+  }
+  function addArticle(){
+    const today=new Date().toLocaleDateString('fr-FR',{day:'numeric',month:'long',year:'numeric'});
+    const card=document.createElement('article');
+    card.className='news-card';
+    card.innerHTML='<div class="news-meta"><span class="news-date">'+today+'</span><span class="news-cat">Communiqué</span></div>'+
+      '<h3 class="news-title">Titre de l\'article</h3>'+
+      '<p class="news-body">Rédigez ici le contenu de votre communiqué…</p>';
+    newsList.insertBefore(card,newsList.firstChild);
+    if(editing){
+      card.querySelectorAll('.news-date,.news-cat,.news-title,.news-body').forEach(el=>el.contentEditable='true');
+      addCardDel(card,'Supprimer cet article');
+      card.querySelector('.news-title').focus();
+    }
+  }
+
+  let editing=false;
+  const toggleBtn=document.getElementById('editToggle');
+  const hint=document.getElementById('editHint');
+  function setEditing(on){
+    editing=on;
+    document.body.classList.toggle('editing',on);
+    if(on)document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
+    editEls.forEach(el=>el.contentEditable=on?'true':'false');
+    if(on){decorateOrg();decorateNews();}else{undecorateOrg();undecorateNews();}
+    toggleBtn.textContent=on?'✕ Quitter':'✎ Éditer';
+    hint.textContent=on?'Modifiez les textes · ajoutez personnes & articles':'Modifiez le site directement';
+  }
+
+  loadContent();
+  toggleBtn.addEventListener('click',()=>setEditing(!editing));
+  document.getElementById('editSave').addEventListener('click',()=>{saveContent();});
+  document.getElementById('editReset').addEventListener('click',resetContent);
+  document.getElementById('orgAddTop').addEventListener('click',()=>addTier('top'));
+  document.getElementById('orgAddBottom').addEventListener('click',()=>addTier('bottom'));
+  const newsAddBtn=document.getElementById('newsAddBtn');
+  if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
+
+  /* ---- Prise de rendez-vous → webhook Discord ---- */
+  // ⚙️ Collez ici l'URL de votre webhook Discord (Paramètres du salon › Intégrations › Webhooks)
+  const RDV_WEBHOOK_URL="";
+  const rdvBtn=document.getElementById('rdvSubmit');
+  if(rdvBtn){
+    const val=id=>document.getElementById(id).value;
+    const status=document.getElementById('rdvStatus');
+    const setStatus=(msg,cls)=>{status.className='rdv-status '+(cls||'');status.textContent=msg;};
+    rdvBtn.addEventListener('click',async()=>{
+      const nom=val('rdvNom').trim(),disc=val('rdvDiscord').trim(),dept=val('rdvDept'),date=val('rdvDate'),motif=val('rdvMotif').trim();
+      if(!nom||!disc||!motif){setStatus('Merci de renseigner au moins le nom, le Discord et le motif.','err');return;}
+      if(!RDV_WEBHOOK_URL){setStatus("Webhook non configuré : ajoutez l'URL dans RDV_WEBHOOK_URL (dans le code).",'err');return;}
+      const idClean=disc.replace(/[<@!>]/g,'');
+      const isId=/^\d{15,20}$/.test(idClean);
+      const payload={
+        content:isId?('Nouvelle demande de rendez-vous — <@'+idClean+'>'):'Nouvelle demande de rendez-vous',
+        allowed_mentions:isId?{parse:[],users:[idClean]}:{parse:[]},
+        embeds:[{
+          title:'📅 Demande de rendez-vous',
+          color:0xC9A24B,
+          fields:[
+            {name:'Demandeur',value:nom,inline:true},
+            {name:'Discord',value:disc,inline:true},
+            {name:'Département',value:dept,inline:true},
+            {name:'Date souhaitée',value:date?date.replace('T',' à '):'À définir',inline:false},
+            {name:'Motif',value:motif.slice(0,1000)}
+          ],
+          footer:{text:'San Andreas Government'},
+          timestamp:new Date().toISOString()
+        }]
+      };
+      setStatus('Envoi en cours…','');
+      rdvBtn.disabled=true;
+      try{
+        const r=await fetch(RDV_WEBHOOK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+        if(r.ok||r.status===204){
+          setStatus('Demande envoyée ✓ Le gouvernement vous recontactera sur Discord.','ok');
+          ['rdvNom','rdvDiscord','rdvDate','rdvMotif'].forEach(id=>document.getElementById(id).value='');
+        }else setStatus('Erreur lors de l\'envoi (code '+r.status+').','err');
+      }catch(e){setStatus('Impossible de contacter le webhook (réseau ou CORS).','err');}
+      rdvBtn.disabled=false;
+    });
+  }
+</script>
+</body>
+</html>
