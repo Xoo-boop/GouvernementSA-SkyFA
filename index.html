@@ -6,7 +6,7 @@
 <title>San Andreas Government</title>
 <meta name="description" content="Portail officiel du Gouvernement de San Andreas — serveur RP SkyFA. Départements, organigramme, actualités, agenda et rendez-vous.">
 <meta name="theme-color" content="#0A0A0B">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='46' fill='%230A0A0B' stroke='%23C9A24B' stroke-width='4'/%3E%3Cpath d='M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z' fill='%23E3C36A'/%3E%3C/svg%3E">
+<link rel="icon" type="image/png" href="logo.png">
 <!-- Aperçu lors du partage (Discord, etc.) -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="San Andreas Government">
@@ -78,7 +78,7 @@
   header.scrolled::before{opacity:1}
   .nav{display:flex;align-items:center;justify-content:space-between;height:84px;gap:24px}
   .brand{display:flex;align-items:center;gap:14px;font-family:var(--display)}
-  .brand .crest{width:42px;height:42px;flex:none}
+  .brand .crest{width:46px;height:46px;flex:none;object-fit:contain}
   .brand .brand-text{display:flex;flex-direction:column;gap:3px;padding-left:15px;border-left:1px solid var(--panel-line)}
   .brand .name{font-size:1.12rem;font-weight:600;letter-spacing:.06em;line-height:1;color:var(--ivory);text-transform:uppercase;white-space:nowrap}
   .brand .sub{font-size:.57rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);font-family:var(--body);font-weight:500}
@@ -352,13 +352,7 @@
 <header id="header">
   <div class="wrap nav">
     <a href="#top" class="brand">
-      <svg class="crest" viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="47" fill="none" stroke="#C9A24B" stroke-width="1.5"/>
-        <circle cx="50" cy="50" r="40" fill="none" stroke="#C9A24B" stroke-width="1" opacity=".45"/>
-        <path d="M50 28 L55 43 L70.5 43 L58 52.5 L62.8 67.5 L50 58.2 L37.2 67.5 L42 52.5 L29.5 43 L45 43 Z" fill="#E3C36A"/>
-        <path d="M31 71 Q24 60 27.5 49" fill="none" stroke="#C9A24B" stroke-width="1.4" opacity=".7"/>
-        <path d="M69 71 Q76 60 72.5 49" fill="none" stroke="#C9A24B" stroke-width="1.4" opacity=".7"/>
-      </svg>
+      <img class="crest" src="logo.png" alt="">
       <span class="brand-text">
         <span class="name">San Andreas</span>
         <span class="sub">Government</span>
@@ -647,10 +641,7 @@
   <div class="wrap foot-grid">
     <div class="foot-brand">
       <div class="name">
-        <svg width="28" height="28" viewBox="0 0 100 100" aria-hidden="true">
-          <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A24B" stroke-width="2"/>
-          <path d="M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z" fill="#E3C36A"/>
-        </svg>
+        <img src="logo.png" alt="" style="width:30px;height:30px;object-fit:contain">
         San Andreas Government
       </div>
       <p>Le portail officiel du Gouvernement de San Andreas — serveur RP SkyFA. Honneur · Travail · Solidarité.</p>
