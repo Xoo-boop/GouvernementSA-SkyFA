@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gouvernement de San Andreas</title>
+<title>San Andreas Government</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -54,27 +54,34 @@
   /* ---- Header ---- */
   header{
     position:fixed;top:0;left:0;right:0;z-index:50;
-    background:rgba(11,19,34,0);backdrop-filter:blur(0);
+    background:rgba(10,10,11,0);backdrop-filter:blur(0);
     transition:background .4s ease,border-color .4s ease,backdrop-filter .4s ease;
     border-bottom:1px solid transparent;
   }
+  header::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(201,162,75,.55),transparent);opacity:0;transition:opacity .4s ease}
   header.scrolled{
-    background:rgba(11,19,34,.82);backdrop-filter:blur(14px);
+    background:rgba(10,10,11,.85);backdrop-filter:blur(14px);
     border-bottom:1px solid var(--panel-line);
   }
-  .nav{display:flex;align-items:center;justify-content:space-between;height:74px}
-  .brand{display:flex;align-items:center;gap:13px;font-family:var(--display)}
-  .brand .crest{width:34px;height:34px;flex:none}
-  .brand .name{font-size:1.18rem;font-weight:600;letter-spacing:.02em;line-height:1.1}
-  .brand .sub{font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;
-    color:var(--gold);font-family:var(--body);font-weight:500}
-  nav ul{display:flex;gap:34px;list-style:none;align-items:center}
-  nav a.link{font-size:.84rem;letter-spacing:.04em;color:var(--ivory-dim);position:relative;padding:6px 0;transition:color .25s}
-  nav a.link::after{content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);transition:width .3s ease}
-  nav a.link:hover{color:var(--ivory)}
-  nav a.link:hover::after{width:100%}
+  header.scrolled::before{opacity:1}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:84px;gap:24px}
+  .brand{display:flex;align-items:center;gap:14px;font-family:var(--display)}
+  .brand .crest{width:42px;height:42px;flex:none}
+  .brand .brand-text{display:flex;flex-direction:column;gap:3px;padding-left:15px;border-left:1px solid var(--panel-line)}
+  .brand .name{font-size:1.12rem;font-weight:600;letter-spacing:.07em;line-height:1;color:var(--ivory);text-transform:uppercase}
+  .brand .sub{font-size:.57rem;letter-spacing:.36em;text-transform:uppercase;color:var(--gold);font-family:var(--body);font-weight:500}
+  nav ul{display:flex;gap:30px;list-style:none;align-items:center}
+  nav a.link{font-family:var(--body);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ivory-dim);position:relative;padding:8px 2px;transition:color .25s}
+  nav a.link::after{content:"";position:absolute;left:50%;bottom:0;width:0;height:1px;background:var(--gold);transition:width .3s ease,left .3s ease}
+  nav a.link:hover{color:var(--gold-bright)}
+  nav a.link:hover::after{width:70%;left:15%}
   nav a.link.active{color:var(--ivory)}
-  nav a.link.active::after{width:100%}
+  nav a.link.active::after{width:70%;left:15%}
+  .nav-cta{font-family:var(--body);font-size:.69rem;font-weight:500;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--gold);border:1px solid rgba(201,162,75,.45);border-radius:2px;padding:10px 18px;
+    display:inline-flex;align-items:center;gap:8px;transition:all .25s ease;white-space:nowrap}
+  .nav-cta:hover{border-color:var(--gold);background:rgba(201,162,75,.08);color:var(--gold-bright)}
   .btn{
     font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.04em;
     padding:11px 22px;border-radius:2px;cursor:pointer;display:inline-flex;
@@ -111,11 +118,12 @@
   .devise::before,.devise::after{content:none}
   .hero p.intro{color:var(--ivory-dim);max-width:54ch;margin:26px auto 0;font-size:1.02rem}
   .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:38px}
-  .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:1;
+  .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:0;pointer-events:none;
     font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
     display:flex;flex-direction:column;align-items:center;gap:9px}
   .scroll-cue .bar{width:1px;height:38px;background:linear-gradient(var(--gold),transparent);animation:cue 2.4s ease-in-out infinite}
   @keyframes cue{0%,100%{opacity:.3;transform:scaleY(.7)}50%{opacity:1;transform:scaleY(1)}}
+  @media(max-height:820px){.scroll-cue{display:none}}
 
   /* ---- Section frame ---- */
   section.block{padding:108px 0;position:relative}
@@ -207,6 +215,11 @@
   }
   @media(max-width:640px){
     nav ul{display:none}
+    nav ul.open{display:flex;flex-direction:column;align-items:flex-start;gap:20px;
+      position:absolute;top:74px;right:14px;left:14px;padding:22px 24px;z-index:60;
+      background:rgba(10,10,11,.97);backdrop-filter:blur(14px);
+      border:1px solid var(--panel-line);border-radius:8px;box-shadow:0 16px 40px rgba(0,0,0,.6)}
+    nav ul.open a.link::after{display:none}
     .menu-toggle{display:block}
     .min-grid,.steps{grid-template-columns:1fr}
     #portail .portal-box{padding:34px 24px}
@@ -298,13 +311,15 @@
   <div class="wrap nav">
     <a href="#top" class="brand">
       <svg class="crest" viewBox="0 0 100 100" aria-hidden="true">
-        <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A24B" stroke-width="2"/>
-        <circle cx="50" cy="50" r="38" fill="none" stroke="#C9A24B" stroke-width="1" opacity=".5"/>
-        <path d="M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z" fill="#E3C36A"/>
+        <circle cx="50" cy="50" r="47" fill="none" stroke="#C9A24B" stroke-width="1.5"/>
+        <circle cx="50" cy="50" r="40" fill="none" stroke="#C9A24B" stroke-width="1" opacity=".45"/>
+        <path d="M50 28 L55 43 L70.5 43 L58 52.5 L62.8 67.5 L50 58.2 L37.2 67.5 L42 52.5 L29.5 43 L45 43 Z" fill="#E3C36A"/>
+        <path d="M31 71 Q24 60 27.5 49" fill="none" stroke="#C9A24B" stroke-width="1.4" opacity=".7"/>
+        <path d="M69 71 Q76 60 72.5 49" fill="none" stroke="#C9A24B" stroke-width="1.4" opacity=".7"/>
       </svg>
-      <span>
-        <span class="name">San Andreas</span><br>
-        <span class="sub">Gouvernement</span>
+      <span class="brand-text">
+        <span class="name">San Andreas</span>
+        <span class="sub">Government</span>
       </span>
     </a>
     <nav>
@@ -315,7 +330,9 @@
         <li><a class="link" href="#organigramme">Organigramme</a></li>
         <li><a class="link" href="#recrutement">Recrutement</a></li>
         <li><a class="link" href="#rdv">Rendez-vous</a></li>
-        <li><a class="btn btn-ghost" href="#portail">Portail des déclarations</a></li>
+        <li><a class="nav-cta" href="#portail">Portail des déclarations
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
+        </a></li>
       </ul>
     </nav>
     <button class="menu-toggle" aria-label="Menu" onclick="document.querySelector('nav ul').classList.toggle('open')">
@@ -347,7 +364,7 @@
       <path d="M72 132 Q60 118 64 102" fill="none" stroke="#C9A24B" stroke-width="1.6" opacity=".8"/>
       <path d="M128 132 Q140 118 136 102" fill="none" stroke="#C9A24B" stroke-width="1.6" opacity=".8"/>
     </svg>
-    <h1>Gouvernement<br>de <em>San&nbsp;Andreas</em></h1>
+    <h1>San&nbsp;Andreas<br><em>Government</em></h1>
     <p class="devise">Honneur · Travail · Solidarité</p>
     <p class="intro">L'institution officielle qui régit la vie civile, économique et judiciaire de l'État. Découvrez sa structure, ses ministères et rejoignez ses rangs.</p>
     <div class="hero-cta">
@@ -554,7 +571,7 @@
           <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A24B" stroke-width="2"/>
           <path d="M50 26 L54.6 40.2 L69.5 40.2 L57.5 49 L62 63.2 L50 54.4 L38 63.2 L42.5 49 L30.5 40.2 L45.4 40.2 Z" fill="#E3C36A"/>
         </svg>
-        San Andreas
+        San Andreas Government
       </div>
       <p>Le portail officiel du Gouvernement de San Andreas — serveur RP SkyFA. Honneur · Travail · Solidarité.</p>
     </div>
@@ -604,9 +621,9 @@
 
   /* ---- Mode édition directe ---- */
   const EDIT_SEL='h1, .devise, .hero .intro, .section-title, .lede, .pillar h4, .pillar p, .stat .num, .stat .lbl, .min-card .tag, .min-card h3, .min-card p, .step h4, .step p, .recruit-cta h3, .recruit-cta p, .portal-box .lede, .foot-brand p';
-  const STORE_KEY='sag_site_content_v1';
-  const ORG_KEY='sag_org_v1';
-  const NEWS_KEY='sag_news_v1';
+  // ⚙️ Adresse de la fonction serveur (même domaine Vercel). À laisser tel quel.
+  const API_URL='/api/content';
+  let adminPassword='';
   const org=document.querySelector('.org');
   const newsList=document.getElementById('newsList');
   const AVATAR_SVG='<svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>';
@@ -616,16 +633,6 @@
     t.textContent=msg;t.classList.add('show');
     clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);
   }
-
-  // --- Restauration des contenus structurés (organigramme + actualités) AVANT l'indexation des textes ---
-  try{
-    const o=localStorage.getItem(ORG_KEY);
-    if(o){org.innerHTML=o;org.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));}
-  }catch(e){}
-  try{
-    const n=localStorage.getItem(NEWS_KEY);
-    if(n && newsList){newsList.innerHTML=n;}
-  }catch(e){}
 
   // Clés d'édition stables : portée par section, pour résister à l'ajout de nouvelles sections
   const editEls=[...document.querySelectorAll(EDIT_SEL)];
@@ -637,13 +644,6 @@
     el.dataset.ek=scope+'-'+_ekCount[scope];
   });
 
-  function loadContent(){
-    try{
-      const raw=localStorage.getItem(STORE_KEY);if(!raw)return;
-      const data=JSON.parse(raw);
-      editEls.forEach(el=>{if(data[el.dataset.ek]!=null)el.innerHTML=data[el.dataset.ek];});
-    }catch(e){}
-  }
   function cleanContainer(el){
     const c=el.cloneNode(true);
     c.querySelectorAll('.card-del,.tier-add').forEach(b=>b.remove());
@@ -651,18 +651,35 @@
     return c.innerHTML;
   }
   function cleanOrgHTML(){return cleanContainer(org);}
-  function saveContent(){
+
+  // Lecture du contenu partagé depuis le serveur (visible par tous les visiteurs)
+  async function loadFromServer(){
     try{
-      const data={};editEls.forEach(el=>data[el.dataset.ek]=el.innerHTML);
-      localStorage.setItem(STORE_KEY,JSON.stringify(data));
-      localStorage.setItem(ORG_KEY,cleanOrgHTML());
-      if(newsList)localStorage.setItem(NEWS_KEY,cleanContainer(newsList));
-      toast('Modifications enregistrées ✓');
-    }catch(e){toast('Sauvegarde indisponible dans cet aperçu');}
+      const r=await fetch(API_URL,{cache:'no-store'});
+      if(!r.ok)return;
+      const data=await r.json();
+      if(data&&data.texts){editEls.forEach(el=>{if(data.texts[el.dataset.ek]!=null)el.innerHTML=data.texts[el.dataset.ek];});}
+      if(data&&data.org){org.innerHTML=data.org;org.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));}
+      if(data&&data.news&&newsList){newsList.innerHTML=data.news;}
+    }catch(e){}
   }
-  function resetContent(){
-    if(!confirm('Réinitialiser tout le contenu modifié ?'))return;
-    try{localStorage.removeItem(STORE_KEY);localStorage.removeItem(ORG_KEY);localStorage.removeItem(NEWS_KEY);}catch(e){}
+  // Enregistrement du contenu pour TOUS les visiteurs
+  async function saveContent(){
+    const data={texts:{},org:cleanOrgHTML(),news:newsList?cleanContainer(newsList):''};
+    editEls.forEach(el=>data.texts[el.dataset.ek]=el.innerHTML);
+    toast('Publication en cours…');
+    try{
+      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:adminPassword,data})});
+      if(r.ok)toast('Publié pour tous les visiteurs ✓');
+      else if(r.status===401)toast('Mot de passe refusé');
+      else toast('Erreur d\'enregistrement ('+r.status+')');
+    }catch(e){toast('Serveur injoignable');}
+  }
+  async function resetContent(){
+    if(!confirm('Réinitialiser le contenu pour TOUS les visiteurs ?'))return;
+    try{
+      await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:adminPassword,data:{}})});
+    }catch(e){}
     location.reload();
   }
 
@@ -774,7 +791,7 @@
     hint.textContent=on?'Modifiez les textes · ajoutez personnes & articles':'Modifiez le site directement';
   }
 
-  loadContent();
+  loadFromServer();
   toggleBtn.addEventListener('click',()=>setEditing(!editing));
   document.getElementById('editSave').addEventListener('click',()=>{saveContent();});
   document.getElementById('editReset').addEventListener('click',resetContent);
@@ -783,14 +800,17 @@
   const newsAddBtn=document.getElementById('newsAddBtn');
   if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
 
-  /* ---- Accès à l'édition protégé par mot de passe ---- */
-  // ⚙️ Changez ce mot de passe. L'éditeur s'ouvre via une URL finissant par #admin, ou avec Ctrl+Maj+E.
-  const EDIT_PASSWORD="Jamais203";
-  function unlockEditor(){
+  /* ---- Accès à l'édition : mot de passe vérifié côté serveur ---- */
+  // L'éditeur s'ouvre via une URL finissant par #admin, ou avec Ctrl+Maj+E.
+  // Le mot de passe se définit côté Vercel (variable ADMIN_PASSWORD), pas dans ce fichier.
+  async function unlockEditor(){
     const pw=prompt("Mot de passe d'édition :");
     if(pw===null)return;
-    if(pw===EDIT_PASSWORD){document.getElementById('editBar').style.display='flex';}
-    else alert("Mot de passe incorrect.");
+    try{
+      const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pw,verify:true})});
+      if(r.ok){adminPassword=pw;document.getElementById('editBar').style.display='flex';toast('Édition déverrouillée');}
+      else alert("Mot de passe incorrect.");
+    }catch(e){alert("Serveur injoignable — vérifie que le site est déployé sur Vercel avec le stockage configuré.");}
   }
   if(location.hash.toLowerCase()==='#admin')unlockEditor();
   document.addEventListener('keydown',e=>{
