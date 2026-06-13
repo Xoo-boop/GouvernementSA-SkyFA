@@ -197,7 +197,14 @@
   .org-node.head{border-color:rgba(201,162,75,.5);box-shadow:0 0 40px rgba(201,162,75,.08)}
   body.editing .org-node{cursor:grab}
   body.editing .org-node.dragging{cursor:grabbing;z-index:5}
-  .org-node .avatar{width:54px;height:54px;display:block;margin:0 auto 10px}
+  .org-node .avatar-wrap{position:relative;width:54px;height:54px;margin:0 auto 10px}
+  .org-node .avatar{width:54px;height:54px;display:block}
+  .org-node .avatar-photo{width:54px;height:54px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);display:block}
+  .avatar-upload,.avatar-remove{position:absolute;width:22px;height:22px;border-radius:50%;border:2px solid var(--navy);
+    cursor:pointer;font-size:10px;display:none;align-items:center;justify-content:center;z-index:3;padding:0;line-height:1}
+  body.editing .avatar-upload,body.editing .avatar-remove{display:flex}
+  .avatar-upload{right:-8px;bottom:-2px;background:var(--gold);color:var(--navy)}
+  .avatar-remove{left:-8px;bottom:-2px;background:var(--rouge);color:#1a1a1f;font-weight:700}
   .org-node .role{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
   .org-node .person{font-family:var(--display);font-size:1.35rem;font-weight:600;color:var(--ivory);margin-top:5px;line-height:1.15}
   .org-anchor{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--gold);
@@ -821,12 +828,33 @@
     renderOrg();
   }
 
+  function processImage(file,cb){
+    const reader=new FileReader();
+    reader.onload=()=>{
+      const img=new Image();
+      img.onload=()=>{
+        const size=220;
+        const canvas=document.createElement('canvas');canvas.width=size;canvas.height=size;
+        const ctx=canvas.getContext('2d');
+        const s=Math.min(img.width,img.height);
+        ctx.drawImage(img,(img.width-s)/2,(img.height-s)/2,s,s,0,0,size,size);
+        cb(canvas.toDataURL('image/jpeg',0.8));
+      };
+      img.src=reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+
   function nodeElement(node){
     const el=document.createElement('div');
     el.className='org-node'+(node.head?' head':'');
     el.dataset.id=node.id;
     el.style.left=node.x+'px';el.style.top=node.y+'px';
-    el.innerHTML=AVATAR_SVG
+    const avatarInner=node.img?'<img class="avatar-photo" src="'+node.img+'" alt="">':AVATAR_SVG;
+    el.innerHTML='<div class="avatar-wrap">'+avatarInner
+      +'<button class="avatar-upload" type="button" title="Ajouter / changer la photo">📷</button>'
+      +(node.img?'<button class="avatar-remove" type="button" title="Retirer la photo">✕</button>':'')
+      +'<input type="file" class="avatar-input" accept="image/*" style="display:none"></div>'
       +'<div class="role">'+node.role+'</div>'
       +'<div class="person">'+node.person+'</div>'
       +SIDES.map(s=>'<span class="org-anchor" data-side="'+s+'"></span>').join('')
@@ -837,6 +865,15 @@
       orgState.edges=orgState.edges.filter(e=>e.from!==node.id&&e.to!==node.id);
       renderOrg();
     });
+    const fileInput=el.querySelector('.avatar-input');
+    el.querySelector('.avatar-upload').addEventListener('click',ev=>{ev.stopPropagation();fileInput.click();});
+    fileInput.addEventListener('change',()=>{
+      const f=fileInput.files&&fileInput.files[0];if(!f)return;
+      if(f.size>8*1024*1024){toast('Image trop lourde (max ~8 Mo)');return;}
+      processImage(f,url=>{const n=orgState.nodes.find(x=>x.id===node.id);if(n){n.img=url;renderOrg();}});
+    });
+    const rm=el.querySelector('.avatar-remove');
+    if(rm)rm.addEventListener('click',ev=>{ev.stopPropagation();const n=orgState.nodes.find(x=>x.id===node.id);if(n){delete n.img;renderOrg();}});
     el.querySelectorAll('.org-anchor').forEach(a=>{
       a.addEventListener('pointerdown',ev=>{
         if(!editing)return;
@@ -868,7 +905,7 @@
 
   function startDrag(ev,id,el){
     if(!editing)return;
-    if(ev.target.closest('.role,.person,.org-anchor,.card-del'))return;
+    if(ev.target.closest('.role,.person,.org-anchor,.card-del,.avatar-upload,.avatar-remove,.avatar-input'))return;
     ev.preventDefault();
     const n=orgState.nodes.find(x=>x.id===id);if(!n)return;
     drag={id,el,offX:ev.clientX-n.x,offY:ev.clientY-n.y};
