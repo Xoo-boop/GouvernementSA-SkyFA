@@ -192,7 +192,10 @@
   .svc-org{padding-top:34px;padding-bottom:34px}
   .svc-org-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
   .svc-org-title{margin-top:6px}
-  .svc-ico{margin-top:18px}
+  .svc-ico{width:40px;height:40px;color:var(--gold);margin-top:18px;display:block}
+  .svc-titlerow{display:flex;align-items:center;gap:16px;margin-top:14px}
+  .svc-titlerow .svc-ico{margin-top:0;flex:none}
+  .svc-titlerow .svc-org-title{margin-top:0}
   .svc-org-actions{display:flex;gap:10px;align-items:center}
   .svc-icon-btn{display:none;font-family:var(--body);font-size:.72rem;letter-spacing:.04em;padding:7px 14px;border-radius:3px;
     cursor:pointer;border:1px solid rgba(201,162,75,.45);background:rgba(201,162,75,.08);color:var(--gold)}
@@ -1157,8 +1160,7 @@
       sec.innerHTML='<div class="wrap"><div class="svc-org-head"><span class="eyebrow">Organigramme</span>'
         +'<div class="svc-org-actions"><button class="svc-icon-btn" type="button" title="Changer l\'icône">Icône ▾</button>'
         +'<button class="svc-del" type="button">✕ Supprimer ce service</button></div></div>'
-        +iconSvg(svc.icon)
-        +'<h2 class="section-title svc-org-title">'+svc.name+'</h2>'
+        +'<div class="svc-titlerow">'+iconSvg(svc.icon)+'<h2 class="section-title svc-org-title">'+svc.name+'</h2></div>'
         +'<div class="org-canvas"><svg class="org-links" aria-hidden="true"></svg></div>'
         +'<div class="org-toolbar"><button class="org-add-node" type="button">+ Ajouter une personne</button>'
         +'<span class="org-hint">Glissez les cartes · reliez via les points dorés · ✕ au milieu d\'un trait pour le supprimer.</span></div></div>';
