@@ -183,6 +183,34 @@
   .org-card .avatar{width:56px;height:56px;display:block;margin:0 auto 12px}
   .org-card.head .avatar{width:68px;height:68px}
 
+  /* ---- Organigramme : éditeur libre ---- */
+  .org-canvas{position:relative;width:100%;min-height:540px;margin-top:48px}
+  body.editing .org-canvas{touch-action:none}
+  .org-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
+  .org-links path.edge{pointer-events:stroke;cursor:pointer}
+  .org-node{position:absolute;width:228px;text-align:center;padding:22px 24px;border:1px solid var(--panel-line);
+    border-radius:3px;background:var(--panel);z-index:2;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+  .org-node.head{border-color:rgba(201,162,75,.5);box-shadow:0 0 40px rgba(201,162,75,.08)}
+  body.editing .org-node{cursor:grab}
+  body.editing .org-node.dragging{cursor:grabbing;z-index:5}
+  .org-node .avatar{width:54px;height:54px;display:block;margin:0 auto 10px}
+  .org-node .role{font-size:.64rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+  .org-node .person{font-family:var(--display);font-size:1.35rem;font-weight:600;color:var(--ivory);margin-top:5px;line-height:1.15}
+  .org-anchor{position:absolute;width:13px;height:13px;border-radius:50%;background:var(--gold);
+    border:2px solid var(--navy);cursor:crosshair;z-index:3;display:none;transform:translate(-50%,-50%)}
+  body.editing .org-anchor{display:block}
+  .org-anchor:hover,.org-anchor.active{background:var(--gold-bright);box-shadow:0 0 0 4px rgba(201,162,75,.25)}
+  .org-anchor[data-side="t"]{left:50%;top:0}
+  .org-anchor[data-side="b"]{left:50%;top:100%}
+  .org-anchor[data-side="l"]{left:0;top:50%}
+  .org-anchor[data-side="r"]{left:100%;top:50%}
+  .org-toolbar{display:none;justify-content:center;align-items:center;gap:18px;flex-wrap:wrap;margin-top:30px}
+  body.editing .org-toolbar{display:flex}
+  .org-add-node{font-family:var(--body);font-size:.82rem;font-weight:500;letter-spacing:.03em;padding:11px 24px;
+    border-radius:3px;cursor:pointer;border:1px dashed var(--gold);background:rgba(201,162,75,.06);color:var(--gold);transition:all .2s}
+  .org-add-node:hover{background:rgba(201,162,75,.14);border-style:solid}
+  .org-hint{font-size:.74rem;color:var(--muted);max-width:520px;line-height:1.4;text-align:left}
+
   /* ---- Recrutement ---- */
   .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:54px;counter-reset:step}
   .step{position:relative;padding-top:30px}
@@ -510,39 +538,18 @@
     <span class="eyebrow reveal">Hiérarchie</span>
     <h2 class="section-title reveal">Organigramme du gouvernement</h2>
     <p class="lede reveal">La chaîne de commandement, du Gouverneur aux directions ministérielles.</p>
-    <div class="org">
-      <div class="org-tier reveal">
-        <div class="org-card head">
-          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
-          <div class="role">Gouverneur</div>
-          <div class="person">Inconnu</div>
-        </div>
-      </div>
-      <div class="org-connector reveal"></div>
-      <div class="org-tier reveal">
-        <div class="org-card">
-          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
-          <div class="role">Vice-Gouverneur</div>
-          <div class="person">Inconnu</div>
-        </div>
-      </div>
-      <div class="org-connector reveal"></div>
-      <div class="org-tier reveal">
-        <div class="org-card">
-          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
-          <div class="role">Département de la Justice</div>
-          <div class="person">Joe Rhas</div>
-        </div>
-        <div class="org-card">
-          <svg class="avatar" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
-          <div class="role">Département des Finances</div>
-          <div class="person">Xoo Rhas</div>
-        </div>
-      </div>
+    <div class="org-canvas" id="orgCanvas">
+      <svg class="org-links" id="orgLinks" aria-hidden="true">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#C9A24B"/>
+          </marker>
+        </defs>
+      </svg>
     </div>
-    <div class="org-add">
-      <button id="orgAddTop" type="button">+ Personne en haut</button>
-      <button id="orgAddBottom" type="button">+ Personne en bas</button>
+    <div class="org-toolbar">
+      <button class="org-add-node" id="orgAddNode" type="button">+ Ajouter une personne</button>
+      <span class="org-hint">Glissez les cartes pour les déplacer · cliquez un point doré d'une carte puis un point d'une autre pour les relier · cliquez un trait pour le supprimer.</span>
     </div>
   </div>
 </section>
@@ -699,7 +706,8 @@
   // ⚙️ Adresse de la fonction serveur (même domaine Vercel). À laisser tel quel.
   const API_URL='/api/content';
   let adminPassword='';
-  const org=document.querySelector('.org');
+  const orgCanvas=document.getElementById('orgCanvas');
+  const orgLinks=document.getElementById('orgLinks');
   const newsList=document.getElementById('newsList');
   const agendaList=document.getElementById('agendaList');
   const dirList=document.getElementById('dirList');
@@ -727,7 +735,6 @@
     c.querySelectorAll('[contenteditable]').forEach(x=>x.removeAttribute('contenteditable'));
     return c.innerHTML;
   }
-  function cleanOrgHTML(){return cleanContainer(org);}
 
   // Lecture du contenu partagé depuis le serveur (visible par tous les visiteurs)
   async function loadFromServer(){
@@ -736,7 +743,7 @@
       if(!r.ok)return;
       const data=await r.json();
       if(data&&data.texts){editEls.forEach(el=>{if(data.texts[el.dataset.ek]!=null)el.innerHTML=data.texts[el.dataset.ek];});}
-      if(data&&data.org){org.innerHTML=data.org;org.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));}
+      if(data&&data.org){loadOrg(data.org);}
       if(data&&data.news&&newsList){newsList.innerHTML=data.news;}
       if(data&&data.agenda&&agendaList){agendaList.innerHTML=data.agenda;}
       if(data&&data.annuaire&&dirList){dirList.innerHTML=data.annuaire;}
@@ -744,7 +751,7 @@
   }
   // Enregistrement du contenu pour TOUS les visiteurs
   async function saveContent(){
-    const data={texts:{},org:cleanOrgHTML(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):''};
+    const data={texts:{},org:serializeOrg(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):''};
     editEls.forEach(el=>data.texts[el.dataset.ek]=el.innerHTML);
     toast('Publication en cours…');
     try{
@@ -762,64 +769,184 @@
     location.reload();
   }
 
-  // --- Édition de l'organigramme : ajout / suppression de personnes et de niveaux ---
-  function makeCard(role,name){
-    const card=document.createElement('div');
-    card.className='org-card';
-    card.innerHTML=AVATAR_SVG+'<div class="role">'+role+'</div><div class="person">'+name+'</div>';
-    return card;
+  /* ---- Organigramme : éditeur libre (déplacer les cartes + tracer les liens) ---- */
+  const SIDES=['t','r','b','l'];
+  let orgState={nodes:[],edges:[]};
+  let orgSeq=0;
+  let pendingAnchor=null;
+  let drag=null;
+
+  function orgNewId(){orgSeq++;return 'n'+orgSeq;}
+
+  function orgDefault(){
+    const W=orgCanvas.clientWidth||900, nw=228, cx=Math.max(20,(W-nw)/2);
+    return {
+      nodes:[
+        {id:'n1',x:cx,y:20,head:true,role:'Gouverneur',person:'Inconnu'},
+        {id:'n2',x:cx,y:190,head:false,role:'Vice-Gouverneur',person:'Inconnu'},
+        {id:'n3',x:Math.max(20,cx-150),y:370,head:false,role:'Département de la Justice',person:'Joe Rhas'},
+        {id:'n4',x:Math.min(W-nw-20,cx+150),y:370,head:false,role:'Département des Finances',person:'Xoo Rhas'}
+      ],
+      edges:[
+        {from:'n1',fs:'b',to:'n2',ts:'t'},
+        {from:'n2',fs:'b',to:'n3',ts:'t'},
+        {from:'n2',fs:'b',to:'n4',ts:'t'}
+      ]
+    };
   }
-  function addDelBtn(card){
-    if(card.querySelector('.card-del'))return;
-    const b=document.createElement('button');
-    b.className='card-del';b.type='button';b.title='Supprimer cette personne';b.textContent='✕';
-    b.addEventListener('click',()=>{
-      const tier=card.closest('.org-tier');
-      card.remove();
-      if(tier && !tier.querySelector('.org-card')){tier.remove();normalizeConnectors();}
+
+  function loadOrg(data){
+    pendingAnchor=null;
+    if(typeof data==='string'){
+      const tmp=document.createElement('div');tmp.innerHTML=data;
+      const cards=[...tmp.querySelectorAll('.org-card')];
+      if(cards.length){
+        const W=orgCanvas.clientWidth||900, perRow=Math.max(1,Math.floor(W/260));
+        orgState={nodes:cards.map((c,i)=>({
+          id:'n'+(i+1),x:30+(i%perRow)*250,y:30+Math.floor(i/perRow)*200,
+          head:c.classList.contains('head'),
+          role:(c.querySelector('.role')||{}).innerHTML||'Poste',
+          person:(c.querySelector('.person')||{}).innerHTML||'Nom'
+        })),edges:[]};
+        orgSeq=cards.length;
+      }else{orgState=orgDefault();orgSeq=orgState.nodes.length;}
+    }else if(data&&Array.isArray(data.nodes)){
+      orgState={nodes:data.nodes.map(n=>({...n})),edges:Array.isArray(data.edges)?data.edges.map(e=>({...e})):[]};
+      orgSeq=orgState.nodes.reduce((m,n)=>Math.max(m,parseInt(String(n.id||'n0').replace(/\D/g,''))||0),0);
+    }else{orgState=orgDefault();orgSeq=orgState.nodes.length;}
+    renderOrg();
+  }
+
+  function nodeElement(node){
+    const el=document.createElement('div');
+    el.className='org-node'+(node.head?' head':'');
+    el.dataset.id=node.id;
+    el.style.left=node.x+'px';el.style.top=node.y+'px';
+    el.innerHTML=AVATAR_SVG
+      +'<div class="role">'+node.role+'</div>'
+      +'<div class="person">'+node.person+'</div>'
+      +SIDES.map(s=>'<span class="org-anchor" data-side="'+s+'"></span>').join('')
+      +'<button class="card-del" type="button" title="Supprimer">✕</button>';
+    el.querySelector('.card-del').addEventListener('click',ev=>{
+      ev.stopPropagation();
+      orgState.nodes=orgState.nodes.filter(n=>n.id!==node.id);
+      orgState.edges=orgState.edges.filter(e=>e.from!==node.id&&e.to!==node.id);
+      renderOrg();
     });
-    card.appendChild(b);
-  }
-  function decorateCard(card){
-    card.querySelectorAll('.role,.person').forEach(el=>el.contentEditable='true');
-    addDelBtn(card);
-  }
-  function addTierAddBtn(tier){
-    if(tier.querySelector('.tier-add'))return;
-    const b=document.createElement('button');
-    b.className='tier-add';b.type='button';b.title='Ajouter une personne dans cette rangée';b.textContent='+';
-    b.addEventListener('click',()=>{
-      const card=makeCard('Poste','Nom du membre');
-      tier.insertBefore(card,b);
-      decorateCard(card);card.querySelector('.person').focus();
+    el.querySelectorAll('.org-anchor').forEach(a=>{
+      a.addEventListener('pointerdown',ev=>{
+        if(!editing)return;
+        ev.stopPropagation();ev.preventDefault();
+        onAnchor(node.id,a.dataset.side,a);
+      });
     });
-    tier.appendChild(b);
+    el.querySelectorAll('.role,.person').forEach(t=>{
+      t.addEventListener('input',()=>{
+        const n=orgState.nodes.find(x=>x.id===node.id);
+        if(n){if(t.classList.contains('role'))n.role=t.innerHTML;else n.person=t.innerHTML;}
+      });
+    });
+    el.addEventListener('pointerdown',ev=>startDrag(ev,node.id,el));
+    return el;
   }
-  function normalizeConnectors(){
-    org.querySelectorAll('.org-connector').forEach(c=>c.remove());
-    const tiers=[...org.querySelectorAll('.org-tier')];
-    tiers.forEach((t,i)=>{
-      if(i>0){const c=document.createElement('div');c.className='org-connector in';org.insertBefore(c,t);}
+
+  function onAnchor(id,side,aEl){
+    if(pendingAnchor&&pendingAnchor.id===id&&pendingAnchor.side===side){
+      pendingAnchor.el.classList.remove('active');pendingAnchor=null;return;
+    }
+    if(!pendingAnchor){pendingAnchor={id,side,el:aEl};aEl.classList.add('active');return;}
+    if(pendingAnchor.id!==id){
+      orgState.edges.push({from:pendingAnchor.id,fs:pendingAnchor.side,to:id,ts:side});
+    }
+    pendingAnchor.el.classList.remove('active');pendingAnchor=null;
+    drawEdges();
+  }
+
+  function startDrag(ev,id,el){
+    if(!editing)return;
+    if(ev.target.closest('.role,.person,.org-anchor,.card-del'))return;
+    ev.preventDefault();
+    const n=orgState.nodes.find(x=>x.id===id);if(!n)return;
+    drag={id,el,offX:ev.clientX-n.x,offY:ev.clientY-n.y};
+    el.classList.add('dragging');
+    try{el.setPointerCapture(ev.pointerId);}catch(e){}
+    el.addEventListener('pointermove',onDrag);
+    el.addEventListener('pointerup',endDrag);
+  }
+  function onDrag(ev){
+    if(!drag)return;
+    const n=orgState.nodes.find(x=>x.id===drag.id);if(!n)return;
+    const W=orgCanvas.clientWidth;
+    let nx=Math.max(0,Math.min(ev.clientX-drag.offX,W-drag.el.offsetWidth));
+    let ny=Math.max(0,ev.clientY-drag.offY);
+    n.x=nx;n.y=ny;drag.el.style.left=nx+'px';drag.el.style.top=ny+'px';
+    drawEdges();
+  }
+  function endDrag(){
+    if(!drag)return;
+    drag.el.classList.remove('dragging');
+    drag.el.removeEventListener('pointermove',onDrag);
+    drag.el.removeEventListener('pointerup',endDrag);
+    drag=null;fitCanvas();
+  }
+
+  function anchorPoint(node,side){
+    const el=orgCanvas.querySelector('.org-node[data-id="'+node.id+'"]');
+    const w=el?el.offsetWidth:228, h=el?el.offsetHeight:120;
+    if(side==='t')return [node.x+w/2,node.y];
+    if(side==='b')return [node.x+w/2,node.y+h];
+    if(side==='l')return [node.x,node.y+h/2];
+    return [node.x+w,node.y+h/2];
+  }
+  function ctrlPoint(p,side,d){
+    if(side==='t')return [p[0],p[1]-d];
+    if(side==='b')return [p[0],p[1]+d];
+    if(side==='l')return [p[0]-d,p[1]];
+    return [p[0]+d,p[1]];
+  }
+  function drawEdges(){
+    [...orgLinks.querySelectorAll('path.edge')].forEach(p=>p.remove());
+    orgState.edges.forEach((e,idx)=>{
+      const a=orgState.nodes.find(n=>n.id===e.from), b=orgState.nodes.find(n=>n.id===e.to);
+      if(!a||!b)return;
+      const p1=anchorPoint(a,e.fs), p2=anchorPoint(b,e.ts);
+      const d=Math.max(40,Math.hypot(p2[0]-p1[0],p2[1]-p1[1])/2.2);
+      const c1=ctrlPoint(p1,e.fs,d), c2=ctrlPoint(p2,e.ts,d);
+      const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+      path.setAttribute('class','edge');
+      path.setAttribute('d','M'+p1[0]+' '+p1[1]+' C '+c1[0]+' '+c1[1]+', '+c2[0]+' '+c2[1]+', '+p2[0]+' '+p2[1]);
+      path.setAttribute('fill','none');
+      path.setAttribute('stroke','#C9A24B');
+      path.setAttribute('stroke-width','2');
+      path.setAttribute('marker-end','url(#arrow)');
+      path.addEventListener('click',()=>{if(!editing)return;orgState.edges.splice(idx,1);drawEdges();});
+      orgLinks.appendChild(path);
     });
   }
-  function addTier(where){
-    const tier=document.createElement('div');
-    tier.className='org-tier in';
-    tier.appendChild(makeCard('Poste','Nom du membre'));
-    if(where==='top')org.insertBefore(tier,org.firstChild);
-    else org.appendChild(tier);
-    normalizeConnectors();
-    if(editing){decorateCard(tier.querySelector('.org-card'));addTierAddBtn(tier);tier.querySelector('.person').focus();}
+  function fitCanvas(){
+    let maxB=540;
+    orgCanvas.querySelectorAll('.org-node').forEach(el=>{maxB=Math.max(maxB,el.offsetTop+el.offsetHeight+40);});
+    orgCanvas.style.minHeight=maxB+'px';
   }
-  function decorateOrg(){
-    org.querySelectorAll('.org-tier').forEach(tier=>{
-      tier.querySelectorAll('.org-card').forEach(decorateCard);
-      addTierAddBtn(tier);
-    });
+  function renderOrg(){
+    [...orgCanvas.querySelectorAll('.org-node')].forEach(el=>el.remove());
+    orgState.nodes.forEach(n=>orgCanvas.appendChild(nodeElement(n)));
+    setOrgEditing(editing);
+    fitCanvas();drawEdges();
   }
-  function undecorateOrg(){
-    org.querySelectorAll('.card-del,.tier-add').forEach(b=>b.remove());
-    org.querySelectorAll('.org-card .role, .org-card .person').forEach(el=>el.contentEditable='false');
+  function addOrgNode(){
+    const W=orgCanvas.clientWidth||900;
+    const node={id:orgNewId(),x:Math.max(20,(W-228)/2),y:30,head:false,role:'Poste',person:'Nom du membre'};
+    orgState.nodes.push(node);renderOrg();
+    const el=orgCanvas.querySelector('.org-node[data-id="'+node.id+'"]');
+    if(el)el.querySelector('.person').focus();
+  }
+  function setOrgEditing(on){
+    orgCanvas.querySelectorAll('.org-node .role, .org-node .person').forEach(el=>el.contentEditable=on?'true':'false');
+    if(!on&&pendingAnchor){pendingAnchor.el.classList.remove('active');pendingAnchor=null;}
+  }
+  function serializeOrg(){
+    return {nodes:orgState.nodes.map(n=>({...n})),edges:orgState.edges.map(e=>({...e}))};
   }
 
   // --- Actualités : publication / édition / suppression d'articles ---
@@ -916,7 +1043,7 @@
     document.body.classList.toggle('editing',on);
     if(on)document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
     editEls.forEach(el=>el.contentEditable=on?'true':'false');
-    if(on){decorateOrg();decorateNews();decorateAgenda();decorateDir();}else{undecorateOrg();undecorateNews();undecorateAgenda();undecorateDir();}
+    if(on){setOrgEditing(true);decorateNews();decorateAgenda();decorateDir();}else{setOrgEditing(false);undecorateNews();undecorateAgenda();undecorateDir();}
     toggleBtn.textContent=on?'✕ Quitter':'✎ Éditer';
     hint.textContent=on?'Modifiez les textes · ajoutez personnes & articles':'Modifiez le site directement';
   }
@@ -925,8 +1052,9 @@
   toggleBtn.addEventListener('click',()=>setEditing(!editing));
   document.getElementById('editSave').addEventListener('click',()=>{saveContent();});
   document.getElementById('editReset').addEventListener('click',resetContent);
-  document.getElementById('orgAddTop').addEventListener('click',()=>addTier('top'));
-  document.getElementById('orgAddBottom').addEventListener('click',()=>addTier('bottom'));
+  document.getElementById('orgAddNode').addEventListener('click',addOrgNode);
+  window.addEventListener('resize',()=>{drawEdges();});
+  loadOrg(null);
   const newsAddBtn=document.getElementById('newsAddBtn');
   if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
   const agendaAddBtn=document.getElementById('agendaAddBtn');
