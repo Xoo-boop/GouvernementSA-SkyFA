@@ -187,7 +187,11 @@
   .org-canvas{position:relative;width:100%;min-height:540px;margin-top:48px}
   body.editing .org-canvas{touch-action:none}
   .org-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
-  .org-links path.edge{pointer-events:stroke;cursor:pointer}
+  .org-links path.edge{pointer-events:none}
+  .edge-del{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;
+    background:var(--rouge);color:#1a1a1f;border:none;cursor:pointer;font-size:11px;font-weight:700;
+    display:none;align-items:center;justify-content:center;z-index:4;line-height:1}
+  body.editing .edge-del{display:flex}
   .org-node{position:absolute;width:228px;text-align:center;padding:22px 24px;border:1px solid var(--panel-line);
     border-radius:3px;background:var(--panel);z-index:2;box-shadow:0 6px 24px rgba(0,0,0,.35)}
   .org-node.head{border-color:rgba(201,162,75,.5);box-shadow:0 0 40px rgba(201,162,75,.08)}
@@ -904,8 +908,14 @@
     if(side==='l')return [p[0]-d,p[1]];
     return [p[0]+d,p[1]];
   }
+  function edgeMid(p1,c1,c2,p2){
+    const t=0.5,mt=0.5;
+    return [mt*mt*mt*p1[0]+3*mt*mt*t*c1[0]+3*mt*t*t*c2[0]+t*t*t*p2[0],
+            mt*mt*mt*p1[1]+3*mt*mt*t*c1[1]+3*mt*t*t*c2[1]+t*t*t*p2[1]];
+  }
   function drawEdges(){
     [...orgLinks.querySelectorAll('path.edge')].forEach(p=>p.remove());
+    [...orgCanvas.querySelectorAll('.edge-del')].forEach(b=>b.remove());
     orgState.edges.forEach((e,idx)=>{
       const a=orgState.nodes.find(n=>n.id===e.from), b=orgState.nodes.find(n=>n.id===e.to);
       if(!a||!b)return;
@@ -915,12 +925,15 @@
       const path=document.createElementNS('http://www.w3.org/2000/svg','path');
       path.setAttribute('class','edge');
       path.setAttribute('d','M'+p1[0]+' '+p1[1]+' C '+c1[0]+' '+c1[1]+', '+c2[0]+' '+c2[1]+', '+p2[0]+' '+p2[1]);
-      path.setAttribute('fill','none');
-      path.setAttribute('stroke','#C9A24B');
-      path.setAttribute('stroke-width','2');
-      path.setAttribute('marker-end','url(#arrow)');
-      path.addEventListener('click',()=>{if(!editing)return;orgState.edges.splice(idx,1);drawEdges();});
+      path.setAttribute('fill','none');path.setAttribute('stroke','#C9A24B');
+      path.setAttribute('stroke-width','2');path.setAttribute('marker-end','url(#arrow)');
       orgLinks.appendChild(path);
+      const mid=edgeMid(p1,c1,c2,p2);
+      const del=document.createElement('button');
+      del.className='edge-del';del.type='button';del.title='Supprimer ce lien';del.textContent='✕';
+      del.style.left=mid[0]+'px';del.style.top=mid[1]+'px';
+      del.addEventListener('click',ev=>{ev.stopPropagation();orgState.edges.splice(idx,1);drawEdges();});
+      orgCanvas.appendChild(del);
     });
   }
   function fitCanvas(){
