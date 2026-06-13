@@ -129,6 +129,9 @@
   .devise::before,.devise::after{content:none}
   .hero p.intro{color:var(--ivory-dim);max-width:54ch;margin:26px auto 0;font-size:1.02rem}
   .hero-cta{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:38px}
+  .hero-link{margin-top:20px;font-size:.88rem;color:var(--muted)}
+  .hero-link a{color:var(--gold);border-bottom:1px solid rgba(201,162,75,.4);transition:color .2s,border-color .2s}
+  .hero-link a:hover{color:var(--gold-bright);border-color:var(--gold-bright)}
   .scroll-cue{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);z-index:0;pointer-events:none;
     font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);
     display:flex;flex-direction:column;align-items:center;gap:9px}
@@ -393,6 +396,7 @@
       </a>
       <a href="#presentation" class="btn btn-ghost">En savoir plus</a>
     </div>
+    <p class="hero-link">ou via le lien : <a href="https://discord.gg/HyHwSdqm5" target="_blank" rel="noopener">https://discord.gg/HyHwSdqm5</a></p>
   </div>
   <div class="scroll-cue"><span>Découvrir</span><span class="bar"></span></div>
 </section>
