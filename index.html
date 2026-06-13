@@ -187,6 +187,25 @@
   .org-canvas{position:relative;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);min-height:540px;margin-top:48px}
   body.editing .org-canvas{touch-action:none;background-image:radial-gradient(rgba(201,162,75,.10) 1px,transparent 1px);background-size:26px 26px}
   .org-guide{position:absolute;background:var(--gold-bright);z-index:6;pointer-events:none;display:none;opacity:.85}
+  .svc-add-wrap{display:none;justify-content:center;margin:6px 0 46px}
+  body.editing .svc-add-wrap{display:flex}
+  .svc-org{padding-top:34px;padding-bottom:34px}
+  .svc-org-head{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .svc-org-title{margin-top:6px}
+  .svc-ico{margin-top:18px}
+  .svc-org-actions{display:flex;gap:10px;align-items:center}
+  .svc-icon-btn{display:none;font-family:var(--body);font-size:.72rem;letter-spacing:.04em;padding:7px 14px;border-radius:3px;
+    cursor:pointer;border:1px solid rgba(201,162,75,.45);background:rgba(201,162,75,.08);color:var(--gold)}
+  body.editing .svc-icon-btn{display:inline-flex;align-items:center}
+  .svc-icon-btn:hover{background:rgba(201,162,75,.16)}
+  .card-ico-btn{display:none;font-family:var(--body);font-size:.7rem;letter-spacing:.04em;margin-bottom:14px;padding:6px 12px;
+    border-radius:3px;cursor:pointer;border:1px solid rgba(201,162,75,.45);background:rgba(201,162,75,.08);color:var(--gold)}
+  body.editing .card-ico-btn{display:inline-flex;align-items:center}
+  .card-ico-btn:hover{background:rgba(201,162,75,.16)}
+  .svc-del{display:none;font-family:var(--body);font-size:.72rem;letter-spacing:.04em;padding:7px 14px;border-radius:3px;
+    cursor:pointer;border:1px solid rgba(227,121,95,.5);background:rgba(227,121,95,.08);color:var(--rouge)}
+  body.editing .svc-del{display:inline-flex;align-items:center}
+  .svc-del:hover{background:rgba(227,121,95,.16)}
   .org-guide-v{top:0;height:100%;width:1px}
   .org-guide-h{left:0;width:100%;height:1px}
   .org-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
@@ -437,6 +456,7 @@
         <li><a class="link" href="#agenda">Agenda</a></li>
         <li><a class="link" href="#ministeres">Ministères</a></li>
         <li><a class="link" href="#organigramme">Organigramme</a></li>
+        <li><a class="link" href="#services">Services publics</a></li>
         <li><a class="link" href="#annuaire">Annuaire</a></li>
         <li><a class="link" href="#recrutement">Recrutement</a></li>
         <li><a class="link" href="#rdv">Rendez-vous</a></li>
@@ -597,6 +617,40 @@
 
 <div class="divider"></div>
 
+<!-- ============ SERVICES PUBLICS ============ -->
+<section class="block" id="services">
+  <div class="wrap">
+    <span class="eyebrow reveal">Au service des citoyens</span>
+    <h2 class="section-title reveal">Services publics</h2>
+    <p class="lede reveal">Les institutions publiques qui veillent sur San Andreas au quotidien.</p>
+    <div class="min-grid">
+      <div class="min-card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3l7 3v5c0 4.2-2.9 7.4-7 9-4.1-1.6-7-4.8-7-9V6z"/></svg>
+        <span class="tag">Sécurité</span>
+        <h3>Police d'État</h3>
+        <p>Maintien de l'ordre, patrouilles et protection des citoyens de l'État.</p>
+      </div>
+      <div class="min-card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg>
+        <span class="tag">Santé</span>
+        <h3>Services médicaux</h3>
+        <p>Urgences, soins et secours (EMS) sur l'ensemble du territoire.</p>
+      </div>
+      <div class="min-card reveal">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3c1.5 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3.5 2-4.5 0 1.8 1 2.5 2 2.5 0-2.5-1-4-2-6z"/></svg>
+        <span class="tag">Secours</span>
+        <h3>Pompiers</h3>
+        <p>Lutte contre les incendies et interventions d'urgence auprès de la population.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div id="serviceOrgWrap"></div>
+<div class="svc-add-wrap"><button id="serviceAddBtn" type="button" class="org-add-node">+ Ajouter un service</button></div>
+
+<div class="divider"></div>
+
 <!-- ============ ANNUAIRE ============ -->
 <section class="block" id="annuaire">
   <div class="wrap">
@@ -707,6 +761,7 @@
       <a href="#presentation">Présentation</a>
       <a href="#ministeres">Ministères</a>
       <a href="#organigramme">Organigramme</a>
+      <a href="#services">Services publics</a>
       <a href="#recrutement">Recrutement</a>
     </div>
     <div class="foot-col">
@@ -788,16 +843,21 @@
       if(!r.ok)return;
       const data=await r.json();
       if(data&&data.texts){editEls.forEach(el=>{if(data.texts[el.dataset.ek]!=null)el.innerHTML=data.texts[el.dataset.ek];});}
-      if(data&&data.org){loadOrg(data.org);}
+      if(data&&data.org){govOrg.load(data.org);}
       if(data&&data.news&&newsList){newsList.innerHTML=data.news;}
       if(data&&data.agenda&&agendaList){agendaList.innerHTML=data.agenda;}
       if(data&&data.annuaire&&dirList){dirList.innerHTML=data.annuaire;}
       applyHost(data&&data.hostImg?data.hostImg:null);
+      serviceList=(data&&Array.isArray(data.serviceList)&&data.serviceList.length)?data.serviceList.map(s=>({...s})):defaultServiceList();
+      serviceOrgsData=(data&&data.serviceOrgs)?data.serviceOrgs:{};
+      renderServiceOrgs();
+      if(data&&Array.isArray(data.cardIcons)&&data.cardIcons.length)cardIcons=data.cardIcons.slice();
+      applyCardIcons();
     }catch(e){}
   }
   // Enregistrement du contenu pour TOUS les visiteurs
   async function saveContent(){
-    const data={texts:{},org:serializeOrg(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):'',hostImg:hostImg||null};
+    const data={texts:{},org:govOrg.serialize(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):'',hostImg:hostImg||null,serviceList:serviceList,serviceOrgs:collectServiceOrgs(),cardIcons:cardIcons};
     editEls.forEach(el=>data.texts[el.dataset.ek]=el.innerHTML);
     toast('Publication en cours…');
     try{
@@ -815,53 +875,8 @@
     location.reload();
   }
 
-  /* ---- Organigramme : éditeur libre (déplacer les cartes + tracer les liens) ---- */
+  /* ---- Organigramme : éditeur libre réutilisable (gouvernement + services) ---- */
   const SIDES=['t','r','b','l'];
-  let orgState={nodes:[],edges:[]};
-  let orgSeq=0;
-  let pendingAnchor=null;
-  let drag=null;
-
-  function orgNewId(){orgSeq++;return 'n'+orgSeq;}
-
-  function orgDefault(){
-    const W=orgCanvas.clientWidth||900, nw=228, cx=Math.max(20,(W-nw)/2);
-    return {
-      nodes:[
-        {id:'n1',x:cx,y:20,head:true,role:'Gouverneur',person:'Inconnu'},
-        {id:'n2',x:cx,y:190,head:false,role:'Vice-Gouverneur',person:'Inconnu'},
-        {id:'n3',x:Math.max(20,cx-150),y:370,head:false,role:'Département de la Justice',person:'Joe Rhas'},
-        {id:'n4',x:Math.min(W-nw-20,cx+150),y:370,head:false,role:'Département des Finances',person:'Xoo Rhas'}
-      ],
-      edges:[
-        {from:'n1',fs:'b',to:'n2',ts:'t'},
-        {from:'n2',fs:'b',to:'n3',ts:'t'},
-        {from:'n2',fs:'b',to:'n4',ts:'t'}
-      ]
-    };
-  }
-
-  function loadOrg(data){
-    pendingAnchor=null;
-    if(typeof data==='string'){
-      const tmp=document.createElement('div');tmp.innerHTML=data;
-      const cards=[...tmp.querySelectorAll('.org-card')];
-      if(cards.length){
-        const W=orgCanvas.clientWidth||900, perRow=Math.max(1,Math.floor(W/260));
-        orgState={nodes:cards.map((c,i)=>({
-          id:'n'+(i+1),x:30+(i%perRow)*250,y:30+Math.floor(i/perRow)*200,
-          head:c.classList.contains('head'),
-          role:(c.querySelector('.role')||{}).innerHTML||'Poste',
-          person:(c.querySelector('.person')||{}).innerHTML||'Nom'
-        })),edges:[]};
-        orgSeq=cards.length;
-      }else{orgState=orgDefault();orgSeq=orgState.nodes.length;}
-    }else if(data&&Array.isArray(data.nodes)){
-      orgState={nodes:data.nodes.map(n=>({...n})),edges:Array.isArray(data.edges)?data.edges.map(e=>({...e})):[]};
-      orgSeq=orgState.nodes.reduce((m,n)=>Math.max(m,parseInt(String(n.id||'n0').replace(/\D/g,''))||0),0);
-    }else{orgState=orgDefault();orgSeq=orgState.nodes.length;}
-    renderOrg();
-  }
 
   function processImage(file,cb){
     const reader=new FileReader();
@@ -880,193 +895,318 @@
     reader.readAsDataURL(file);
   }
 
-  function nodeElement(node){
-    const el=document.createElement('div');
-    el.className='org-node'+(node.head?' head':'');
-    el.dataset.id=node.id;
-    el.style.left=node.x+'px';el.style.top=node.y+'px';
-    const avatarInner=node.img?'<img class="avatar-photo" src="'+node.img+'" alt="">':AVATAR_SVG;
-    el.innerHTML='<div class="avatar-wrap">'+avatarInner
-      +'<button class="avatar-upload" type="button" title="Ajouter / changer la photo">📷</button>'
-      +(node.img?'<button class="avatar-remove" type="button" title="Retirer la photo">✕</button>':'')
-      +'<input type="file" class="avatar-input" accept="image/*" style="display:none"></div>'
-      +'<div class="role">'+node.role+'</div>'
-      +'<div class="person">'+node.person+'</div>'
-      +SIDES.map(s=>'<span class="org-anchor" data-side="'+s+'"></span>').join('')
-      +'<button class="card-del" type="button" title="Supprimer">✕</button>';
-    el.querySelector('.card-del').addEventListener('click',ev=>{
-      ev.stopPropagation();
-      orgState.nodes=orgState.nodes.filter(n=>n.id!==node.id);
-      orgState.edges=orgState.edges.filter(e=>e.from!==node.id&&e.to!==node.id);
-      renderOrg();
-    });
-    const fileInput=el.querySelector('.avatar-input');
-    el.querySelector('.avatar-upload').addEventListener('click',ev=>{ev.stopPropagation();fileInput.click();});
-    fileInput.addEventListener('change',()=>{
-      const f=fileInput.files&&fileInput.files[0];if(!f)return;
-      if(f.size>8*1024*1024){toast('Image trop lourde (max ~8 Mo)');return;}
-      processImage(f,url=>{const n=orgState.nodes.find(x=>x.id===node.id);if(n){n.img=url;renderOrg();}});
-    });
-    const rm=el.querySelector('.avatar-remove');
-    if(rm)rm.addEventListener('click',ev=>{ev.stopPropagation();const n=orgState.nodes.find(x=>x.id===node.id);if(n){delete n.img;renderOrg();}});
-    el.querySelectorAll('.org-anchor').forEach(a=>{
-      a.addEventListener('pointerdown',ev=>{
-        if(!editing)return;
-        ev.stopPropagation();ev.preventDefault();
-        onAnchor(node.id,a.dataset.side,a);
+  function makeOrg(canvas, links, getDefault){
+    let state={nodes:[],edges:[]};
+    let seq=0, pending=null, drag=null, guideV=null, guideH=null;
+    const newId=()=>{seq++;return 'n'+seq;};
+
+    function load(data){
+      pending=null;
+      if(typeof data==='string'){
+        const tmp=document.createElement('div');tmp.innerHTML=data;
+        const cards=[...tmp.querySelectorAll('.org-card')];
+        if(cards.length){
+          const W=canvas.clientWidth||900, perRow=Math.max(1,Math.floor(W/260));
+          state={nodes:cards.map((c,i)=>({id:'n'+(i+1),x:30+(i%perRow)*250,y:30+Math.floor(i/perRow)*200,head:c.classList.contains('head'),role:(c.querySelector('.role')||{}).innerHTML||'Poste',person:(c.querySelector('.person')||{}).innerHTML||'Nom'})),edges:[]};
+          seq=cards.length;
+        }else{state=getDefault(canvas);seq=state.nodes.length;}
+      }else if(data&&Array.isArray(data.nodes)){
+        state={nodes:data.nodes.map(n=>({...n})),edges:Array.isArray(data.edges)?data.edges.map(e=>({...e})):[]};
+        seq=state.nodes.reduce((m,n)=>Math.max(m,parseInt(String(n.id||'n0').replace(/\D/g,''))||0),0);
+      }else{state=getDefault(canvas);seq=state.nodes.length;}
+      render();
+    }
+
+    function nodeElement(node){
+      const el=document.createElement('div');
+      el.className='org-node'+(node.head?' head':'');
+      el.dataset.id=node.id;
+      el.style.left=node.x+'px';el.style.top=node.y+'px';
+      const avatarInner=node.img?'<img class="avatar-photo" src="'+node.img+'" alt="">':AVATAR_SVG;
+      el.innerHTML='<div class="avatar-wrap">'+avatarInner
+        +'<button class="avatar-upload" type="button" title="Ajouter / changer la photo">📷</button>'
+        +(node.img?'<button class="avatar-remove" type="button" title="Retirer la photo">✕</button>':'')
+        +'<input type="file" class="avatar-input" accept="image/*" style="display:none"></div>'
+        +'<div class="role">'+node.role+'</div>'
+        +'<div class="person">'+node.person+'</div>'
+        +SIDES.map(s=>'<span class="org-anchor" data-side="'+s+'"></span>').join('')
+        +'<button class="card-del" type="button" title="Supprimer">✕</button>';
+      el.querySelector('.card-del').addEventListener('click',ev=>{
+        ev.stopPropagation();
+        state.nodes=state.nodes.filter(n=>n.id!==node.id);
+        state.edges=state.edges.filter(e=>e.from!==node.id&&e.to!==node.id);
+        render();
       });
-    });
-    el.querySelectorAll('.role,.person').forEach(t=>{
-      t.addEventListener('input',()=>{
-        const n=orgState.nodes.find(x=>x.id===node.id);
-        if(n){if(t.classList.contains('role'))n.role=t.innerHTML;else n.person=t.innerHTML;}
+      const fileInput=el.querySelector('.avatar-input');
+      el.querySelector('.avatar-upload').addEventListener('click',ev=>{ev.stopPropagation();fileInput.click();});
+      fileInput.addEventListener('change',()=>{
+        const f=fileInput.files&&fileInput.files[0];if(!f)return;
+        if(f.size>8*1024*1024){toast('Image trop lourde (max ~8 Mo)');return;}
+        processImage(f,url=>{const n=state.nodes.find(x=>x.id===node.id);if(n){n.img=url;render();}});
       });
-    });
-    el.addEventListener('pointerdown',ev=>startDrag(ev,node.id,el));
-    return el;
-  }
-
-  function onAnchor(id,side,aEl){
-    if(pendingAnchor&&pendingAnchor.id===id&&pendingAnchor.side===side){
-      pendingAnchor.el.classList.remove('active');pendingAnchor=null;return;
+      const rm=el.querySelector('.avatar-remove');
+      if(rm)rm.addEventListener('click',ev=>{ev.stopPropagation();const n=state.nodes.find(x=>x.id===node.id);if(n){delete n.img;render();}});
+      el.querySelectorAll('.org-anchor').forEach(a=>{
+        a.addEventListener('pointerdown',ev=>{
+          if(!editing)return;
+          ev.stopPropagation();ev.preventDefault();
+          onAnchor(node.id,a.dataset.side,a);
+        });
+      });
+      el.querySelectorAll('.role,.person').forEach(t=>{
+        t.addEventListener('input',()=>{
+          const n=state.nodes.find(x=>x.id===node.id);
+          if(n){if(t.classList.contains('role'))n.role=t.innerHTML;else n.person=t.innerHTML;}
+        });
+      });
+      el.addEventListener('pointerdown',ev=>startDrag(ev,node.id,el));
+      return el;
     }
-    if(!pendingAnchor){pendingAnchor={id,side,el:aEl};aEl.classList.add('active');return;}
-    if(pendingAnchor.id!==id){
-      orgState.edges.push({from:pendingAnchor.id,fs:pendingAnchor.side,to:id,ts:side});
-    }
-    pendingAnchor.el.classList.remove('active');pendingAnchor=null;
-    drawEdges();
-  }
 
-  function startDrag(ev,id,el){
-    if(!editing)return;
-    if(ev.target.closest('.role,.person,.org-anchor,.card-del,.avatar-upload,.avatar-remove,.avatar-input'))return;
-    ev.preventDefault();
-    const n=orgState.nodes.find(x=>x.id===id);if(!n)return;
-    drag={id,el,offX:ev.clientX-n.x,offY:ev.clientY-n.y};
-    el.classList.add('dragging');
-    try{el.setPointerCapture(ev.pointerId);}catch(e){}
-    el.addEventListener('pointermove',onDrag);
-    el.addEventListener('pointerup',endDrag);
-  }
-  let guideV=null,guideH=null;
-  function ensureGuides(){
-    if(!guideV){guideV=document.createElement('div');guideV.className='org-guide org-guide-v';orgCanvas.appendChild(guideV);}
-    if(!guideH){guideH=document.createElement('div');guideH.className='org-guide org-guide-h';orgCanvas.appendChild(guideH);}
-  }
-  function showGuides(vG,hG){
-    ensureGuides();
-    if(vG!=null){guideV.style.left=vG+'px';guideV.style.display='block';}else guideV.style.display='none';
-    if(hG!=null){guideH.style.top=hG+'px';guideH.style.display='block';}else guideH.style.display='none';
-  }
-  function hideGuides(){if(guideV)guideV.style.display='none';if(guideH)guideH.style.display='none';}
-  function snapAndGuide(nx,ny,w,h){
-    const SNAP=7;let vG=null,hG=null;
-    const dl=nx,dc=nx+w/2,dr=nx+w, dt=ny,dm=ny+h/2,db=ny+h;
-    for(const o of orgState.nodes){
-      if(o.id===drag.id)continue;
-      const oel=orgCanvas.querySelector('.org-node[data-id="'+o.id+'"]');
-      const ow=oel?oel.offsetWidth:228, oh=oel?oel.offsetHeight:120;
-      const oL=o.x,oC=o.x+ow/2,oR=o.x+ow, oT=o.y,oM=o.y+oh/2,oB=o.y+oh;
-      if(vG==null){
-        if(Math.abs(dc-oC)<SNAP){nx=oC-w/2;vG=oC;}
-        else if(Math.abs(dl-oL)<SNAP){nx=oL;vG=oL;}
-        else if(Math.abs(dr-oR)<SNAP){nx=oR-w;vG=oR;}
+    function onAnchor(id,side,aEl){
+      if(pending&&pending.id===id&&pending.side===side){pending.el.classList.remove('active');pending=null;return;}
+      if(!pending){pending={id,side,el:aEl};aEl.classList.add('active');return;}
+      if(pending.id!==id){state.edges.push({from:pending.id,fs:pending.side,to:id,ts:side});}
+      pending.el.classList.remove('active');pending=null;
+      drawEdges();
+    }
+
+    function startDrag(ev,id,el){
+      if(!editing)return;
+      if(ev.target.closest('.role,.person,.org-anchor,.card-del,.avatar-upload,.avatar-remove,.avatar-input'))return;
+      ev.preventDefault();
+      const n=state.nodes.find(x=>x.id===id);if(!n)return;
+      drag={id,el,offX:ev.clientX-n.x,offY:ev.clientY-n.y};
+      el.classList.add('dragging');
+      try{el.setPointerCapture(ev.pointerId);}catch(e){}
+      el.addEventListener('pointermove',onDrag);
+      el.addEventListener('pointerup',endDrag);
+    }
+    function ensureGuides(){
+      if(!guideV){guideV=document.createElement('div');guideV.className='org-guide org-guide-v';canvas.appendChild(guideV);}
+      if(!guideH){guideH=document.createElement('div');guideH.className='org-guide org-guide-h';canvas.appendChild(guideH);}
+    }
+    function showGuides(vG,hG){
+      ensureGuides();
+      if(vG!=null){guideV.style.left=vG+'px';guideV.style.display='block';}else guideV.style.display='none';
+      if(hG!=null){guideH.style.top=hG+'px';guideH.style.display='block';}else guideH.style.display='none';
+    }
+    function hideGuides(){if(guideV)guideV.style.display='none';if(guideH)guideH.style.display='none';}
+    function snapAndGuide(nx,ny,w,h){
+      const SNAP=7;let vG=null,hG=null;
+      const dl=nx,dc=nx+w/2,dr=nx+w, dt=ny,dm=ny+h/2,db=ny+h;
+      for(const o of state.nodes){
+        if(o.id===drag.id)continue;
+        const oel=canvas.querySelector('.org-node[data-id="'+o.id+'"]');
+        const ow=oel?oel.offsetWidth:228, oh=oel?oel.offsetHeight:120;
+        const oL=o.x,oC=o.x+ow/2,oR=o.x+ow, oT=o.y,oM=o.y+oh/2,oB=o.y+oh;
+        if(vG==null){
+          if(Math.abs(dc-oC)<SNAP){nx=oC-w/2;vG=oC;}
+          else if(Math.abs(dl-oL)<SNAP){nx=oL;vG=oL;}
+          else if(Math.abs(dr-oR)<SNAP){nx=oR-w;vG=oR;}
+        }
+        if(hG==null){
+          if(Math.abs(dm-oM)<SNAP){ny=oM-h/2;hG=oM;}
+          else if(Math.abs(dt-oT)<SNAP){ny=oT;hG=oT;}
+          else if(Math.abs(db-oB)<SNAP){ny=oB-h;hG=oB;}
+        }
+        if(vG!=null&&hG!=null)break;
       }
-      if(hG==null){
-        if(Math.abs(dm-oM)<SNAP){ny=oM-h/2;hG=oM;}
-        else if(Math.abs(dt-oT)<SNAP){ny=oT;hG=oT;}
-        else if(Math.abs(db-oB)<SNAP){ny=oB-h;hG=oB;}
-      }
-      if(vG!=null&&hG!=null)break;
+      return {nx,ny,vG,hG};
     }
-    return {nx,ny,vG,hG};
-  }
-  function onDrag(ev){
-    if(!drag)return;
-    const n=orgState.nodes.find(x=>x.id===drag.id);if(!n)return;
-    const W=orgCanvas.clientWidth, w=drag.el.offsetWidth, h=drag.el.offsetHeight;
-    let nx=Math.max(0,Math.min(ev.clientX-drag.offX,W-w));
-    let ny=Math.max(0,ev.clientY-drag.offY);
-    const g=snapAndGuide(nx,ny,w,h);
-    nx=Math.max(0,Math.min(g.nx,W-w));ny=Math.max(0,g.ny);
-    n.x=nx;n.y=ny;drag.el.style.left=nx+'px';drag.el.style.top=ny+'px';
-    drawEdges();showGuides(g.vG,g.hG);
-  }
-  function endDrag(){
-    if(!drag)return;
-    drag.el.classList.remove('dragging');
-    drag.el.removeEventListener('pointermove',onDrag);
-    drag.el.removeEventListener('pointerup',endDrag);
-    drag=null;hideGuides();fitCanvas();
+    function onDrag(ev){
+      if(!drag)return;
+      const n=state.nodes.find(x=>x.id===drag.id);if(!n)return;
+      const W=canvas.clientWidth, w=drag.el.offsetWidth, h=drag.el.offsetHeight;
+      let nx=Math.max(0,Math.min(ev.clientX-drag.offX,W-w));
+      let ny=Math.max(0,ev.clientY-drag.offY);
+      const g=snapAndGuide(nx,ny,w,h);
+      nx=Math.max(0,Math.min(g.nx,W-w));ny=Math.max(0,g.ny);
+      n.x=nx;n.y=ny;drag.el.style.left=nx+'px';drag.el.style.top=ny+'px';
+      drawEdges();showGuides(g.vG,g.hG);
+    }
+    function endDrag(){
+      if(!drag)return;
+      drag.el.classList.remove('dragging');
+      drag.el.removeEventListener('pointermove',onDrag);
+      drag.el.removeEventListener('pointerup',endDrag);
+      drag=null;hideGuides();fitCanvas();
+    }
+    function anchorPoint(node,side){
+      const el=canvas.querySelector('.org-node[data-id="'+node.id+'"]');
+      const w=el?el.offsetWidth:228, h=el?el.offsetHeight:120;
+      if(side==='t')return [node.x+w/2,node.y];
+      if(side==='b')return [node.x+w/2,node.y+h];
+      if(side==='l')return [node.x,node.y+h/2];
+      return [node.x+w,node.y+h/2];
+    }
+    function ctrlPoint(p,side,d){
+      if(side==='t')return [p[0],p[1]-d];
+      if(side==='b')return [p[0],p[1]+d];
+      if(side==='l')return [p[0]-d,p[1]];
+      return [p[0]+d,p[1]];
+    }
+    function edgeMid(p1,c1,c2,p2){
+      const t=0.5,mt=0.5;
+      return [mt*mt*mt*p1[0]+3*mt*mt*t*c1[0]+3*mt*t*t*c2[0]+t*t*t*p2[0],
+              mt*mt*mt*p1[1]+3*mt*mt*t*c1[1]+3*mt*t*t*c2[1]+t*t*t*p2[1]];
+    }
+    function drawEdges(){
+      [...links.querySelectorAll('path.edge')].forEach(p=>p.remove());
+      [...canvas.querySelectorAll('.edge-del')].forEach(b=>b.remove());
+      state.edges.forEach((e,idx)=>{
+        const a=state.nodes.find(n=>n.id===e.from), b=state.nodes.find(n=>n.id===e.to);
+        if(!a||!b)return;
+        const p1=anchorPoint(a,e.fs), p2=anchorPoint(b,e.ts);
+        const d=Math.max(40,Math.hypot(p2[0]-p1[0],p2[1]-p1[1])/2.2);
+        const c1=ctrlPoint(p1,e.fs,d), c2=ctrlPoint(p2,e.ts,d);
+        const path=document.createElementNS('http://www.w3.org/2000/svg','path');
+        path.setAttribute('class','edge');
+        path.setAttribute('d','M'+p1[0]+' '+p1[1]+' C '+c1[0]+' '+c1[1]+', '+c2[0]+' '+c2[1]+', '+p2[0]+' '+p2[1]);
+        path.setAttribute('fill','none');path.setAttribute('stroke','#C9A24B');
+        path.setAttribute('stroke-width','2');path.setAttribute('marker-end','url(#arrow)');
+        links.appendChild(path);
+        const mid=edgeMid(p1,c1,c2,p2);
+        const del=document.createElement('button');
+        del.className='edge-del';del.type='button';del.title='Supprimer ce lien';del.textContent='✕';
+        del.style.left=mid[0]+'px';del.style.top=mid[1]+'px';
+        del.addEventListener('click',ev=>{ev.stopPropagation();state.edges.splice(idx,1);drawEdges();});
+        canvas.appendChild(del);
+      });
+    }
+    function fitCanvas(){
+      let maxB=480;
+      canvas.querySelectorAll('.org-node').forEach(el=>{maxB=Math.max(maxB,el.offsetTop+el.offsetHeight+40);});
+      canvas.style.minHeight=maxB+'px';
+    }
+    function render(){
+      [...canvas.querySelectorAll('.org-node')].forEach(el=>el.remove());
+      state.nodes.forEach(n=>canvas.appendChild(nodeElement(n)));
+      setEditing(editing);
+      fitCanvas();drawEdges();
+    }
+    function addNode(){
+      const W=canvas.clientWidth||900;
+      const node={id:newId(),x:Math.max(20,(W-228)/2),y:30,head:false,role:'Poste',person:'Nom du membre'};
+      state.nodes.push(node);render();
+      const el=canvas.querySelector('.org-node[data-id="'+node.id+'"]');
+      if(el)el.querySelector('.person').focus();
+    }
+    function setEditing(on){
+      canvas.querySelectorAll('.org-node .role, .org-node .person').forEach(el=>el.contentEditable=on?'true':'false');
+      if(!on&&pending){pending.el.classList.remove('active');pending=null;}
+    }
+    function serialize(){return {nodes:state.nodes.map(n=>({...n})),edges:state.edges.map(e=>({...e}))};}
+
+    return {load,serialize,setEditing,addNode,redraw:drawEdges};
   }
 
-  function anchorPoint(node,side){
-    const el=orgCanvas.querySelector('.org-node[data-id="'+node.id+'"]');
-    const w=el?el.offsetWidth:228, h=el?el.offsetHeight:120;
-    if(side==='t')return [node.x+w/2,node.y];
-    if(side==='b')return [node.x+w/2,node.y+h];
-    if(side==='l')return [node.x,node.y+h/2];
-    return [node.x+w,node.y+h/2];
+  // --- Organigramme du gouvernement ---
+  function govDefault(canvas){
+    const W=canvas.clientWidth||900, nw=228, cx=Math.max(20,(W-nw)/2);
+    return {
+      nodes:[
+        {id:'n1',x:cx,y:20,head:true,role:'Gouverneur',person:'Inconnu'},
+        {id:'n2',x:cx,y:190,head:false,role:'Vice-Gouverneur',person:'Inconnu'},
+        {id:'n3',x:Math.max(20,cx-150),y:370,head:false,role:'Département de la Justice',person:'Joe Rhas'},
+        {id:'n4',x:Math.min(W-nw-20,cx+150),y:370,head:false,role:'Département des Finances',person:'Xoo Rhas'}
+      ],
+      edges:[{from:'n1',fs:'b',to:'n2',ts:'t'},{from:'n2',fs:'b',to:'n3',ts:'t'},{from:'n2',fs:'b',to:'n4',ts:'t'}]
+    };
   }
-  function ctrlPoint(p,side,d){
-    if(side==='t')return [p[0],p[1]-d];
-    if(side==='b')return [p[0],p[1]+d];
-    if(side==='l')return [p[0]-d,p[1]];
-    return [p[0]+d,p[1]];
+  const govOrg=makeOrg(orgCanvas, orgLinks, govDefault);
+
+  // --- Organigrammes des services (un par service, ajout possible) ---
+  const serviceOrgWrap=document.getElementById('serviceOrgWrap');
+  const serviceAddBtn=document.getElementById('serviceAddBtn');
+  let serviceList=[];
+  let serviceOrgsData={};
+  let serviceOrgInstances={};
+  function defaultServiceList(){return [{id:'police',name:"Police d'État",icon:'shield'},{id:'ems',name:'EMS',icon:'medical'}];}
+  const ICONS={
+    shield:'M12 3l7 3v5c0 4.2-2.9 7.4-7 9-4.1-1.6-7-4.8-7-9V6z',
+    medical:'M9 3h6v6h6v6h-6v6H9v-6H3V9h6z',
+    flame:'M12 3c1.5 3 4 4 4 8a4 4 0 0 1-8 0c0-2 1-3.5 2-4.5 0 1.8 1 2.5 2 2.5 0-2.5-1-4-2-6z',
+    star:'M12 3l2.5 6 6.5.5-5 4.2 1.6 6.3L12 16.8 6.4 20l1.6-6.3-5-4.2 6.5-.5z',
+    scale:'M12 3v18M5 7l7-4 7 4M4 21h16M6 21l-2-7h4zM18 21l-2-7h4z',
+    building:'M4 21V8l8-5 8 5v13M9 21v-6h6v6M8 11h.01M12 11h.01M16 11h.01',
+    badge:'M12 3l2 4 4 .5-3 3 1 4-4-2-4 2 1-4-3-3 4-.5zM7 20l5-3 5 3',
+    car:'M5 13l1.5-5h11L19 13M5 13h14v5H5zM7 18v2M17 18v2M7.5 13.5h.01M16.5 13.5h.01'
+  };
+  const ICON_KEYS=Object.keys(ICONS);
+  function iconSvg(key){return '<svg class="svc-ico ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="'+(ICONS[key]||ICONS.star)+'"/></svg>';}
+  function svcDefault(canvas){
+    const W=canvas.clientWidth||900, nw=228, cx=Math.max(20,(W-nw)/2);
+    return {nodes:[{id:'n1',x:cx,y:20,head:true,role:'Direction',person:'Responsable'}],edges:[]};
   }
-  function edgeMid(p1,c1,c2,p2){
-    const t=0.5,mt=0.5;
-    return [mt*mt*mt*p1[0]+3*mt*mt*t*c1[0]+3*mt*t*t*c2[0]+t*t*t*p2[0],
-            mt*mt*mt*p1[1]+3*mt*mt*t*c1[1]+3*mt*t*t*c2[1]+t*t*t*p2[1]];
+  function collectServiceOrgs(){
+    const out={};
+    for(const id in serviceOrgInstances){out[id]=serviceOrgInstances[id].serialize();}
+    serviceOrgsData=out;return out;
   }
-  function drawEdges(){
-    [...orgLinks.querySelectorAll('path.edge')].forEach(p=>p.remove());
-    [...orgCanvas.querySelectorAll('.edge-del')].forEach(b=>b.remove());
-    orgState.edges.forEach((e,idx)=>{
-      const a=orgState.nodes.find(n=>n.id===e.from), b=orgState.nodes.find(n=>n.id===e.to);
-      if(!a||!b)return;
-      const p1=anchorPoint(a,e.fs), p2=anchorPoint(b,e.ts);
-      const d=Math.max(40,Math.hypot(p2[0]-p1[0],p2[1]-p1[1])/2.2);
-      const c1=ctrlPoint(p1,e.fs,d), c2=ctrlPoint(p2,e.ts,d);
-      const path=document.createElementNS('http://www.w3.org/2000/svg','path');
-      path.setAttribute('class','edge');
-      path.setAttribute('d','M'+p1[0]+' '+p1[1]+' C '+c1[0]+' '+c1[1]+', '+c2[0]+' '+c2[1]+', '+p2[0]+' '+p2[1]);
-      path.setAttribute('fill','none');path.setAttribute('stroke','#C9A24B');
-      path.setAttribute('stroke-width','2');path.setAttribute('marker-end','url(#arrow)');
-      orgLinks.appendChild(path);
-      const mid=edgeMid(p1,c1,c2,p2);
-      const del=document.createElement('button');
-      del.className='edge-del';del.type='button';del.title='Supprimer ce lien';del.textContent='✕';
-      del.style.left=mid[0]+'px';del.style.top=mid[1]+'px';
-      del.addEventListener('click',ev=>{ev.stopPropagation();orgState.edges.splice(idx,1);drawEdges();});
-      orgCanvas.appendChild(del);
+  function setServicesEditing(on){
+    if(!serviceOrgWrap)return;
+    serviceOrgWrap.querySelectorAll('.svc-org-title').forEach(t=>t.contentEditable=on?'true':'false');
+    for(const id in serviceOrgInstances)serviceOrgInstances[id].setEditing(on);
+  }
+  function renderServiceOrgs(){
+    if(!serviceOrgWrap)return;
+    serviceOrgWrap.innerHTML='';serviceOrgInstances={};
+    serviceList.forEach(svc=>{
+      const sec=document.createElement('section');sec.className='block svc-org';sec.dataset.id=svc.id;
+      sec.innerHTML='<div class="wrap"><div class="svc-org-head"><span class="eyebrow">Organigramme</span>'
+        +'<div class="svc-org-actions"><button class="svc-icon-btn" type="button" title="Changer l\'icône">Icône ▾</button>'
+        +'<button class="svc-del" type="button">✕ Supprimer ce service</button></div></div>'
+        +iconSvg(svc.icon)
+        +'<h2 class="section-title svc-org-title">'+svc.name+'</h2>'
+        +'<div class="org-canvas"><svg class="org-links" aria-hidden="true"></svg></div>'
+        +'<div class="org-toolbar"><button class="org-add-node" type="button">+ Ajouter une personne</button>'
+        +'<span class="org-hint">Glissez les cartes · reliez via les points dorés · ✕ au milieu d\'un trait pour le supprimer.</span></div></div>';
+      serviceOrgWrap.appendChild(sec);
+      const canvas=sec.querySelector('.org-canvas'), links=sec.querySelector('.org-links');
+      const inst=makeOrg(canvas,links,svcDefault);
+      serviceOrgInstances[svc.id]=inst;
+      inst.load(serviceOrgsData[svc.id]||null);
+      sec.querySelector('.org-add-node').addEventListener('click',()=>inst.addNode());
+      sec.querySelector('.svc-del').addEventListener('click',()=>{
+        collectServiceOrgs();
+        serviceList=serviceList.filter(s=>s.id!==svc.id);delete serviceOrgsData[svc.id];
+        renderServiceOrgs();
+      });
+      const icoPath=sec.querySelector('.svc-ico path');
+      sec.querySelector('.svc-icon-btn').addEventListener('click',()=>{
+        let i=ICON_KEYS.indexOf(svc.icon||'star');i=(i+1)%ICON_KEYS.length;svc.icon=ICON_KEYS[i];
+        icoPath.setAttribute('d',ICONS[svc.icon]);
+      });
+      const title=sec.querySelector('.svc-org-title');
+      title.addEventListener('input',()=>{const s=serviceList.find(s=>s.id===svc.id);if(s)s.name=title.textContent;});
+    });
+    setServicesEditing(editing);
+  }
+  function addService(){
+    collectServiceOrgs();
+    const name=prompt('Nom du nouveau service :','Nouveau service');
+    if(!name)return;
+    serviceList.push({id:'svc_'+Date.now().toString(36),name:name,icon:'star'});
+    renderServiceOrgs();
+  }
+
+  // --- Icônes des cartes "Services publics" (cohérentes avec les organigrammes) ---
+  const serviceCards=[...document.querySelectorAll('#services .min-card')];
+  let cardIcons=['shield','medical','flame'];
+  function applyCardIcons(){
+    serviceCards.forEach((card,i)=>{
+      const p=card.querySelector('.ico path');
+      if(p&&cardIcons[i])p.setAttribute('d',ICONS[cardIcons[i]]||ICONS.star);
     });
   }
-  function fitCanvas(){
-    let maxB=540;
-    orgCanvas.querySelectorAll('.org-node').forEach(el=>{maxB=Math.max(maxB,el.offsetTop+el.offsetHeight+40);});
-    orgCanvas.style.minHeight=maxB+'px';
-  }
-  function renderOrg(){
-    [...orgCanvas.querySelectorAll('.org-node')].forEach(el=>el.remove());
-    orgState.nodes.forEach(n=>orgCanvas.appendChild(nodeElement(n)));
-    setOrgEditing(editing);
-    fitCanvas();drawEdges();
-  }
-  function addOrgNode(){
-    const W=orgCanvas.clientWidth||900;
-    const node={id:orgNewId(),x:Math.max(20,(W-228)/2),y:30,head:false,role:'Poste',person:'Nom du membre'};
-    orgState.nodes.push(node);renderOrg();
-    const el=orgCanvas.querySelector('.org-node[data-id="'+node.id+'"]');
-    if(el)el.querySelector('.person').focus();
-  }
-  function setOrgEditing(on){
-    orgCanvas.querySelectorAll('.org-node .role, .org-node .person').forEach(el=>el.contentEditable=on?'true':'false');
-    if(!on&&pendingAnchor){pendingAnchor.el.classList.remove('active');pendingAnchor=null;}
-  }
-  function serializeOrg(){
-    return {nodes:orgState.nodes.map(n=>({...n})),edges:orgState.edges.map(e=>({...e}))};
+  function setupCardIconButtons(){
+    serviceCards.forEach((card,i)=>{
+      if(card.querySelector('.card-ico-btn'))return;
+      const btn=document.createElement('button');btn.className='card-ico-btn';btn.type='button';btn.textContent='Icône ▾';
+      btn.addEventListener('click',()=>{let idx=ICON_KEYS.indexOf(cardIcons[i]||'star');idx=(idx+1)%ICON_KEYS.length;cardIcons[i]=ICON_KEYS[idx];applyCardIcons();});
+      card.insertBefore(btn,card.firstChild);
+    });
   }
 
   // --- Actualités : publication / édition / suppression d'articles ---
@@ -1163,7 +1303,7 @@
     document.body.classList.toggle('editing',on);
     if(on)document.querySelectorAll('.reveal').forEach(el=>el.classList.add('in'));
     editEls.forEach(el=>el.contentEditable=on?'true':'false');
-    if(on){setOrgEditing(true);decorateNews();decorateAgenda();decorateDir();}else{setOrgEditing(false);undecorateNews();undecorateAgenda();undecorateDir();}
+    if(on){govOrg.setEditing(true);setServicesEditing(true);decorateNews();decorateAgenda();decorateDir();}else{govOrg.setEditing(false);setServicesEditing(false);undecorateNews();undecorateAgenda();undecorateDir();}
     toggleBtn.textContent=on?'✕ Quitter':'✎ Éditer';
     hint.textContent=on?'Modifiez les textes · ajoutez personnes & articles':'Modifiez le site directement';
   }
@@ -1194,9 +1334,12 @@
   toggleBtn.addEventListener('click',()=>setEditing(!editing));
   document.getElementById('editSave').addEventListener('click',()=>{saveContent();});
   document.getElementById('editReset').addEventListener('click',resetContent);
-  document.getElementById('orgAddNode').addEventListener('click',addOrgNode);
-  window.addEventListener('resize',()=>{drawEdges();});
-  loadOrg(null);
+  document.getElementById('orgAddNode').addEventListener('click',()=>govOrg.addNode());
+  if(serviceAddBtn)serviceAddBtn.addEventListener('click',addService);
+  window.addEventListener('resize',()=>{govOrg.redraw();for(const id in serviceOrgInstances)serviceOrgInstances[id].redraw();});
+  govOrg.load(null);
+  serviceList=defaultServiceList();serviceOrgsData={};renderServiceOrgs();
+  setupCardIconButtons();applyCardIcons();
   const newsAddBtn=document.getElementById('newsAddBtn');
   if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
   const agendaAddBtn=document.getElementById('agendaAddBtn');
