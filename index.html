@@ -201,8 +201,10 @@
   body.editing .org-node{cursor:grab}
   body.editing .org-node.dragging{cursor:grabbing;z-index:5}
   .org-node .avatar-wrap{position:relative;width:120px;height:120px;margin:0 auto 14px}
-  .org-node .avatar{width:120px;height:120px;display:block}
-  .org-node .avatar-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);display:block}
+  .org-node .avatar-wrap::after{content:"";position:absolute;inset:-16px;border-radius:50%;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,rgba(227,195,106,.55),rgba(201,162,75,.22) 52%,transparent 72%);filter:blur(9px)}
+  .org-node .avatar{width:120px;height:120px;display:block;position:relative;z-index:1}
+  .org-node .avatar-photo{width:120px;height:120px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);display:block;position:relative;z-index:1}
   .avatar-upload,.avatar-remove{position:absolute;width:22px;height:22px;border-radius:50%;border:2px solid var(--navy);
     cursor:pointer;font-size:10px;display:none;align-items:center;justify-content:center;z-index:3;padding:0;line-height:1}
   body.editing .avatar-upload,body.editing .avatar-remove{display:flex}
@@ -369,6 +371,31 @@
   @media(max-width:640px){.dir-grid{grid-template-columns:1fr}
     .agenda-item{flex-direction:column;gap:12px}
     .agenda-date{width:auto;text-align:left;border-right:none;border-bottom:1px solid var(--panel-line);padding-right:0;padding-bottom:10px;display:flex;gap:10px;align-items:baseline}}
+
+  /* ---- Carte hôtesse d'accueil (portail) ---- */
+  .host-card{display:flex;align-items:center;gap:24px;margin-top:34px;padding:22px 26px;border:1px solid var(--panel-line);
+    border-radius:3px;background:linear-gradient(180deg,var(--panel),var(--navy-2));max-width:560px}
+  .host-avatar{position:relative;width:84px;height:84px;flex:none}
+  .host-avatar::after{content:"";position:absolute;inset:-12px;border-radius:50%;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,rgba(227,195,106,.5),rgba(201,162,75,.2) 52%,transparent 72%);filter:blur(8px)}
+  .host-avatar img,.host-avatar svg{position:relative;z-index:1;width:84px;height:84px;border-radius:50%;object-fit:cover;display:block}
+  .host-avatar img{border:1px solid var(--gold)}
+  .host-up,.host-rm{position:absolute;width:22px;height:22px;border-radius:50%;border:2px solid var(--navy);
+    cursor:pointer;font-size:10px;display:none;align-items:center;justify-content:center;z-index:3;padding:0;line-height:1}
+  body.editing .host-up{display:flex}
+  body.editing .host-big.has-photo .host-rm{display:flex}
+  .host-up{right:-8px;bottom:-2px;background:var(--gold);color:var(--navy)}
+  .host-rm{left:-8px;bottom:-2px;background:var(--rouge);color:#1a1a1f;font-weight:700}
+  .host-text{font-size:1rem;color:var(--ivory-dim);line-height:1.5}
+  .host-text strong{color:var(--gold-bright);font-weight:600}
+  .host-big{position:relative;width:210px;height:210px;margin:0 auto;justify-self:center}
+  .host-big::after{content:"";position:absolute;inset:-22px;border-radius:50%;z-index:0;pointer-events:none;
+    background:radial-gradient(circle,rgba(227,195,106,.5),rgba(201,162,75,.2) 52%,transparent 72%);filter:blur(14px)}
+  .host-big img,.host-big svg{position:relative;z-index:1;width:210px;height:210px;border-radius:50%;object-fit:cover;display:block}
+  .host-big img{border:1px solid var(--gold)}
+  .host-big .host-up{width:30px;height:30px;font-size:13px;right:12px;bottom:14px}
+  .host-big .host-rm{width:30px;height:30px;font-size:13px;left:12px;bottom:14px}
+  @media(max-width:760px){.host-big{width:160px;height:160px;margin-top:24px}.host-big img,.host-big svg{width:160px;height:160px}}
 
   /* ---- Formulaire rendez-vous ---- */
   .rdv-form{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:46px;max-width:800px}
@@ -652,11 +679,15 @@
     <div class="portal-box reveal">
       <div>
         <p class="lede" style="margin-top:0">Les entreprises de San Andreas effectuent leurs déclarations fiscales hebdomadaires directement sur le portail officiel. Connexion Discord, suivi des échéances et historique des déclarations.</p>
-        <a href="https://declarationimpots.dofskyfa.fr" target="_blank" rel="noopener" class="btn btn-gold" style="margin-top:28px">Accéder au portail
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
-        </a>
+        <p class="host-text" style="margin-top:24px">Vous adresser à <strong>Josianne</strong>, l'hôtesse d'accueil du gouvernement.</p>
       </div>
-      <svg class="icon-big" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.1"><rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+      <div class="host-big">
+        <img id="hostPhoto" alt="" style="display:none">
+        <svg id="hostSilhouette" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="31" fill="#0d0d0f" stroke="#C9A24B" stroke-width="1.5"/><circle cx="32" cy="25" r="10" fill="#2a2a30"/><path d="M14 53c2-11 9-17 18-17s16 6 18 17z" fill="#2a2a30"/></svg>
+        <button class="host-up" id="hostUpload" type="button" title="Ajouter / changer la photo">📷</button>
+        <button class="host-rm" id="hostRemove" type="button" title="Retirer la photo">✕</button>
+        <input type="file" id="hostInput" accept="image/*" style="display:none">
+      </div>
     </div>
   </div>
 </section>
@@ -716,7 +747,7 @@
   });
 
   /* ---- Mode édition directe ---- */
-  const EDIT_SEL='h1, .devise, .hero .intro, .section-title, .lede, .pillar h4, .pillar p, .stat .num, .stat .lbl, .min-card .tag, .min-card h3, .min-card p, .step h4, .step p, .recruit-cta h3, .recruit-cta p, .portal-box .lede, .foot-brand p';
+  const EDIT_SEL='h1, .devise, .hero .intro, .section-title, .lede, .pillar h4, .pillar p, .stat .num, .stat .lbl, .min-card .tag, .min-card h3, .min-card p, .step h4, .step p, .recruit-cta h3, .recruit-cta p, .portal-box .lede, .host-text, .foot-brand p';
   // ⚙️ Adresse de la fonction serveur (même domaine Vercel). À laisser tel quel.
   const API_URL='/api/content';
   let adminPassword='';
@@ -761,11 +792,12 @@
       if(data&&data.news&&newsList){newsList.innerHTML=data.news;}
       if(data&&data.agenda&&agendaList){agendaList.innerHTML=data.agenda;}
       if(data&&data.annuaire&&dirList){dirList.innerHTML=data.annuaire;}
+      applyHost(data&&data.hostImg?data.hostImg:null);
     }catch(e){}
   }
   // Enregistrement du contenu pour TOUS les visiteurs
   async function saveContent(){
-    const data={texts:{},org:serializeOrg(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):''};
+    const data={texts:{},org:serializeOrg(),news:newsList?cleanContainer(newsList):'',agenda:agendaList?cleanContainer(agendaList):'',annuaire:dirList?cleanContainer(dirList):'',hostImg:hostImg||null};
     editEls.forEach(el=>data.texts[el.dataset.ek]=el.innerHTML);
     toast('Publication en cours…');
     try{
@@ -1135,6 +1167,28 @@
     toggleBtn.textContent=on?'✕ Quitter':'✎ Éditer';
     hint.textContent=on?'Modifiez les textes · ajoutez personnes & articles':'Modifiez le site directement';
   }
+
+  // --- Photo de l'hôtesse d'accueil (Josianne) ---
+  let hostImg=null;
+  const hostPhoto=document.getElementById('hostPhoto');
+  const hostSilhouette=document.getElementById('hostSilhouette');
+  const hostCard=document.querySelector('.host-big');
+  const hostInput=document.getElementById('hostInput');
+  function applyHost(img){
+    hostImg=img||null;
+    if(!hostPhoto)return;
+    if(hostImg){hostPhoto.src=hostImg;hostPhoto.style.display='block';if(hostSilhouette)hostSilhouette.style.display='none';if(hostCard)hostCard.classList.add('has-photo');}
+    else{hostPhoto.removeAttribute('src');hostPhoto.style.display='none';if(hostSilhouette)hostSilhouette.style.display='block';if(hostCard)hostCard.classList.remove('has-photo');}
+  }
+  const hostUploadBtn=document.getElementById('hostUpload');
+  if(hostUploadBtn)hostUploadBtn.addEventListener('click',()=>hostInput.click());
+  if(hostInput)hostInput.addEventListener('change',()=>{
+    const f=hostInput.files&&hostInput.files[0];if(!f)return;
+    if(f.size>8*1024*1024){toast('Image trop lourde (max ~8 Mo)');return;}
+    processImage(f,url=>applyHost(url));
+  });
+  const hostRemoveBtn=document.getElementById('hostRemove');
+  if(hostRemoveBtn)hostRemoveBtn.addEventListener('click',()=>applyHost(null));
 
   loadFromServer();
   toggleBtn.addEventListener('click',()=>setEditing(!editing));
