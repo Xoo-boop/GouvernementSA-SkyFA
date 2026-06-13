@@ -185,7 +185,10 @@
 
   /* ---- Organigramme : éditeur libre ---- */
   .org-canvas{position:relative;width:100vw;max-width:100vw;margin-left:calc(50% - 50vw);min-height:540px;margin-top:48px}
-  body.editing .org-canvas{touch-action:none}
+  body.editing .org-canvas{touch-action:none;background-image:radial-gradient(rgba(201,162,75,.10) 1px,transparent 1px);background-size:26px 26px}
+  .org-guide{position:absolute;background:var(--gold-bright);z-index:6;pointer-events:none;display:none;opacity:.85}
+  .org-guide-v{top:0;height:100%;width:1px}
+  .org-guide-h{left:0;width:100%;height:1px}
   .org-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
   .org-links path.edge{pointer-events:none}
   .edge-del{position:absolute;transform:translate(-50%,-50%);width:22px;height:22px;border-radius:50%;
@@ -914,21 +917,56 @@
     el.addEventListener('pointermove',onDrag);
     el.addEventListener('pointerup',endDrag);
   }
+  let guideV=null,guideH=null;
+  function ensureGuides(){
+    if(!guideV){guideV=document.createElement('div');guideV.className='org-guide org-guide-v';orgCanvas.appendChild(guideV);}
+    if(!guideH){guideH=document.createElement('div');guideH.className='org-guide org-guide-h';orgCanvas.appendChild(guideH);}
+  }
+  function showGuides(vG,hG){
+    ensureGuides();
+    if(vG!=null){guideV.style.left=vG+'px';guideV.style.display='block';}else guideV.style.display='none';
+    if(hG!=null){guideH.style.top=hG+'px';guideH.style.display='block';}else guideH.style.display='none';
+  }
+  function hideGuides(){if(guideV)guideV.style.display='none';if(guideH)guideH.style.display='none';}
+  function snapAndGuide(nx,ny,w,h){
+    const SNAP=7;let vG=null,hG=null;
+    const dl=nx,dc=nx+w/2,dr=nx+w, dt=ny,dm=ny+h/2,db=ny+h;
+    for(const o of orgState.nodes){
+      if(o.id===drag.id)continue;
+      const oel=orgCanvas.querySelector('.org-node[data-id="'+o.id+'"]');
+      const ow=oel?oel.offsetWidth:228, oh=oel?oel.offsetHeight:120;
+      const oL=o.x,oC=o.x+ow/2,oR=o.x+ow, oT=o.y,oM=o.y+oh/2,oB=o.y+oh;
+      if(vG==null){
+        if(Math.abs(dc-oC)<SNAP){nx=oC-w/2;vG=oC;}
+        else if(Math.abs(dl-oL)<SNAP){nx=oL;vG=oL;}
+        else if(Math.abs(dr-oR)<SNAP){nx=oR-w;vG=oR;}
+      }
+      if(hG==null){
+        if(Math.abs(dm-oM)<SNAP){ny=oM-h/2;hG=oM;}
+        else if(Math.abs(dt-oT)<SNAP){ny=oT;hG=oT;}
+        else if(Math.abs(db-oB)<SNAP){ny=oB-h;hG=oB;}
+      }
+      if(vG!=null&&hG!=null)break;
+    }
+    return {nx,ny,vG,hG};
+  }
   function onDrag(ev){
     if(!drag)return;
     const n=orgState.nodes.find(x=>x.id===drag.id);if(!n)return;
-    const W=orgCanvas.clientWidth;
-    let nx=Math.max(0,Math.min(ev.clientX-drag.offX,W-drag.el.offsetWidth));
+    const W=orgCanvas.clientWidth, w=drag.el.offsetWidth, h=drag.el.offsetHeight;
+    let nx=Math.max(0,Math.min(ev.clientX-drag.offX,W-w));
     let ny=Math.max(0,ev.clientY-drag.offY);
+    const g=snapAndGuide(nx,ny,w,h);
+    nx=Math.max(0,Math.min(g.nx,W-w));ny=Math.max(0,g.ny);
     n.x=nx;n.y=ny;drag.el.style.left=nx+'px';drag.el.style.top=ny+'px';
-    drawEdges();
+    drawEdges();showGuides(g.vG,g.hG);
   }
   function endDrag(){
     if(!drag)return;
     drag.el.classList.remove('dragging');
     drag.el.removeEventListener('pointermove',onDrag);
     drag.el.removeEventListener('pointerup',endDrag);
-    drag=null;fitCanvas();
+    drag=null;hideGuides();fitCanvas();
   }
 
   function anchorPoint(node,side){
