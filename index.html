@@ -430,6 +430,9 @@
     border:1px solid var(--panel-line);border-radius:3px;padding:12px 14px;transition:border-color .2s;width:100%}
   .rdv-form input:focus,.rdv-form select:focus,.rdv-form textarea:focus{outline:none;border-color:var(--gold)}
   .rdv-form textarea{resize:vertical}
+  .cf-status{margin-top:14px;font-size:.86rem;min-height:1.2em;line-height:1.4}
+  .cf-status.ok{color:#7fca8e}
+  .cf-status.err{color:var(--rouge)}
   .rdv-form option{background:var(--panel);color:var(--ivory)}
   .rdv-actions{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:6px}
   .rdv-actions .btn{border:none}
@@ -462,7 +465,7 @@
         <li><a class="link" href="#services">Services publics</a></li>
         <li><a class="link" href="#annuaire">Annuaire</a></li>
         <li><a class="link" href="#recrutement">Recrutement</a></li>
-        <li><a class="link" href="#rdv">Rendez-vous</a></li>
+        <li><a class="link" href="#rdv">Contact</a></li>
         <li><a class="nav-cta" href="#portail">Portail
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M17 7H9M17 7v8"/></svg>
         </a></li>
@@ -714,14 +717,38 @@
 <section class="block" id="rdv">
   <div class="wrap">
     <span class="eyebrow reveal">Démarches</span>
-    <h2 class="section-title reveal">Prendre un rendez-vous</h2>
-    <p class="lede reveal">Pour préserver l'immersion RP, les rendez-vous se prennent directement sur le Discord du gouvernement. Choisissez le département concerné et échangez avec un membre de l'administration.</p>
-    <div class="recruit-cta reveal" style="margin-top:46px">
-      <h3>Rendez-vous sur Discord</h3>
-      <p>Rejoignez le serveur, ouvrez la rubrique rendez-vous et prenez contact avec le Cabinet, la Justice ou les Finances.</p>
-      <a href="https://discord.gg/wwXkcPb5sU" target="_blank" rel="noopener" class="btn btn-gold">Prendre rendez-vous sur Discord
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-      </a>
+    <h2 class="section-title reveal">Prendre contact</h2>
+    <p class="lede reveal">Remplissez le formulaire ci-dessous : à l'envoi, un salon privé est automatiquement ouvert sur notre Discord pour traiter votre demande. Un membre de l'administration vous y répondra.</p>
+    <div class="rdv-form reveal" id="contactForm">
+      <div class="field">
+        <label for="cfPseudo">Pseudo RP</label>
+        <input id="cfPseudo" type="text" maxlength="60" placeholder="Votre nom en jeu">
+      </div>
+      <div class="field">
+        <label for="cfDiscord">Identifiant Discord <span class="opt">(recommandé — pour accéder au salon)</span></label>
+        <input id="cfDiscord" type="text" maxlength="40" placeholder="Ex. 123456789012345678">
+      </div>
+      <div class="field full">
+        <label for="cfSujet">Service concerné</label>
+        <select id="cfSujet">
+          <option>Cabinet du Gouverneur</option>
+          <option>Département de la Justice</option>
+          <option>Département des Finances</option>
+          <option>Police d'État</option>
+          <option>EMS</option>
+          <option>Autre / Général</option>
+        </select>
+      </div>
+      <div class="field full">
+        <label for="cfMsg">Votre message</label>
+        <textarea id="cfMsg" rows="5" maxlength="1500" placeholder="Décrivez votre demande…"></textarea>
+      </div>
+      <div class="full">
+        <button type="button" id="cfSend" class="btn btn-gold">Envoyer ma demande
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+        <p id="cfStatus" class="cf-status"></p>
+      </div>
     </div>
   </div>
 </section>
@@ -1342,6 +1369,29 @@
   govOrg.load(null);
   serviceList=defaultServiceList();serviceOrgsData={};renderServiceOrgs();
   setupCardIconButtons();applyCardIcons();
+
+  // --- Formulaire de contact : crée un salon Discord à l'envoi ---
+  const cfSend=document.getElementById('cfSend');
+  if(cfSend)cfSend.addEventListener('click',async()=>{
+    const g=id=>{const e=document.getElementById(id);return e?e.value.trim():'';};
+    const status=document.getElementById('cfStatus');
+    const pseudo=g('cfPseudo'),discord=g('cfDiscord'),sujet=g('cfSujet'),message=g('cfMsg');
+    if(!pseudo||!message){status.textContent='Merci d\'indiquer au moins votre pseudo et votre message.';status.className='cf-status err';return;}
+    cfSend.disabled=true;status.textContent='Envoi en cours…';status.className='cf-status';
+    try{
+      const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({pseudo,discord,sujet,message})});
+      const d=await r.json().catch(()=>({}));
+      if(r.ok&&d.ok){
+        status.textContent='Demande envoyée ✓ Un salon a été ouvert sur le Discord, l\'administration vous y répondra.';
+        status.className='cf-status ok';
+        ['cfPseudo','cfDiscord','cfMsg'].forEach(i=>{const e=document.getElementById(i);if(e)e.value='';});
+      }else{
+        status.textContent=(d&&d.error)?d.error:'Une erreur est survenue. Réessayez plus tard.';
+        status.className='cf-status err';
+      }
+    }catch(e){status.textContent='Impossible de joindre le serveur. Réessayez plus tard.';status.className='cf-status err';}
+    cfSend.disabled=false;
+  });
   const newsAddBtn=document.getElementById('newsAddBtn');
   if(newsAddBtn)newsAddBtn.addEventListener('click',addArticle);
   const agendaAddBtn=document.getElementById('agendaAddBtn');
